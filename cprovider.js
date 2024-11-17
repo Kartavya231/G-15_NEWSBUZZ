@@ -13,7 +13,6 @@ const getAllProviders = async (req, res) => {
 
 const getFollowingProviders = async (req, res) => {
   try {
-
     const user = await usermodel.findById(req.user.id).populate('following');
 
     const following = user.following;
