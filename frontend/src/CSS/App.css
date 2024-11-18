@@ -1,0 +1,9 @@
+/* Hide the default cursor completely */
+.App {
+  cursor: none;
+}
+
+/* Prevent cursor from reappearing on clickable elements */
+* {
+  cursor: none !important;
+}
