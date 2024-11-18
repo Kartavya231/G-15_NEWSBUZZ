@@ -11,6 +11,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/material";
+import UnLoggedNewsCard from "../components/UnLoggedNewsCard.jsx";
 gsap.registerPlugin(ScrollTrigger);
 
 const parentstyle = {
@@ -142,7 +143,17 @@ const Home = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <div /> // card
+                  {displayedArticles.map(
+                    (article, index) =>
+                      article && (
+                        <UnLoggedNewsCard
+                          title={article.title.substring(0, 90) + "..."}
+                          link={article.link}
+                          time={article.time}
+                          providerImg={article.providerImg}
+                        />
+                      )
+                  )}
                 </Grid>
               </Grid>
             </Grid>
