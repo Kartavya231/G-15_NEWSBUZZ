@@ -14,10 +14,20 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import AccountCircleRoundedIcon from "@mui/icons-material/AccountCircleRounded";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded"; // Import history icon
 import { ThemeContext } from "../context/ThemeContext";
+import feedImgDark from "../images/feed_dark.png";
+import feedImgLight from "../images/feed_light.png";
+import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
+import following_light from "../images/following_light.png";
+import following_dark from "../images/following_dark.png";
 
 const NAVIGATION = [
   { title: "Home", icon: <HomeRoundedIcon />, path: "/" },
+  { title: "Feed", icon: "feedImg", path: "/myfeed" },
+  { title: "Following", icon: "followingImg", path: "/providers/following" },
+  { title: "Bookmark", icon: <BookmarkRoundedIcon />, path: "/bookmark" },
+  { title: "History", icon: <HistoryRoundedIcon />, path: "/history" }, // Add history icon and path
   { kind: "divider" },
   { title: "Account", icon: <AccountCircleRoundedIcon />, path: "/account" },
 ];
@@ -28,7 +38,8 @@ const SidebarNavigation = ({ open, setOpen }) => {
   const [loggedIn, setLoggedIn] = React.useState(false);
 
   const toggleDrawer = (state) => () => setOpen(state);
-
+  const feedImg = mode === "light" ? feedImgDark : feedImgLight;
+  const followingImg = mode === "light" ? following_light : following_dark;
   useEffect(() => {
     if (window.localStorage.getItem("token") === null) {
       setLoggedIn(false);
@@ -36,12 +47,11 @@ const SidebarNavigation = ({ open, setOpen }) => {
       setLoggedIn(true);
     }
   }, [loggedIn]);
-
   const loginPage = () => {
     navigate("/login");
-  };
+  }
 
-  return (
+  return (  
     <>
       <Toolbar>
         <IconButton
@@ -92,7 +102,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
               <ListItem
                 button
                 key={item.title}
-                onClick={loggedIn ? () => navigate(item.path) : loginPage}
+                onClick={loggedIn ? (() => navigate(item.path)) : loginPage}
                 sx={{
                   "&:hover": {
                     backgroundColor: mode === "dark" ? "#333" : "#eee",
@@ -115,7 +125,21 @@ const SidebarNavigation = ({ open, setOpen }) => {
                       justifyContent: "center",
                     }}
                   >
-                    {React.cloneElement(item.icon, { fontSize: "large" })}
+                    {item.icon === "feedImg" ? (
+                      <img
+                        src={feedImg}
+                        alt="feed icon"
+                        style={{ width: 30, height: 30, position: "center" }}
+                      />
+                    ) : item.icon === "followingImg" ? (
+                      <img
+                        src={followingImg}
+                        alt="following icon"
+                        style={{ width: 30, height: 30 }}
+                      />
+                    ) : (
+                      React.cloneElement(item.icon, { fontSize: "large" })
+                    )}
                   </ListItemIcon>
                 </Tooltip>
                 {open && (
@@ -132,7 +156,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
             )
           )}
         </List>
-      </Drawer>
+      </Drawer >
     </>
   );
 };
