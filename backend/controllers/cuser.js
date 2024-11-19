@@ -1,3 +1,4 @@
+
 // const usermodel = require("../models/muser");
 // const quickSearch_model = require("../models/mquicksearch");
 // const verificationcodemodel = require("../models/mverificationcode");
@@ -129,6 +130,43 @@ const signUpPost = async (req, res) => {
 };
 
 
+const getUserProfile = async (req, res) => {
+  const user = await usermodel.findById(req.user.id).select("-password");
+  return res.status(202).json({ success: true, user: user });
+}
 
 
-export default { logInPost, signUpPost};
+const updateUserProfile = async (req, res) => {
+
+
+
+  const user =
+    await usermodel.findByIdAndUpdate
+      (req.user.id,
+        req.body,
+        { new: true }
+      );
+
+  if (!user) {
+    return res.status(210).json({ success: false, message: "User not found" });
+  }
+  return res.status(202).json({ success: true, message: "Profile Updated Successfully" });
+}
+
+
+const isUserExistWhenSignUp = async (req, res) => {
+  const { email, role } = req.body;
+  const userExist = await usermodel.findOne({ email, role });
+  if (userExist) {
+    return res.status(210).json({ success: false, message: "User already exists for given role" });
+  }
+  return res.status(202).json({ success: true, message: "User does not exist" });
+}
+
+// module.exports = { logInPost, signUpPost,isUserExistWhenSignUp, getUserProfile, updateUserProfile };
+
+// const cuser = { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile };
+
+// export default cuser;
+
+export default { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile };
