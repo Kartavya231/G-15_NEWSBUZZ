@@ -3,14 +3,10 @@
 
 import express from "express";
 const router = express.Router();
-import quiz from "../models/mquizscehma.js";
+import { getQuiz } from "../controllers/cquiz.js";
 
-router.get("/getquestions",async(req,res,next)=>{
-    const questions = await quiz.aggregate([{$sample:{size:10}}]);
-    res.send(questions);
-})
+router.get("/getquestions",getQuiz)
 
-// module.exports=router;
 export default router;
 
   
