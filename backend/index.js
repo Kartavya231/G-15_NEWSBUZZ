@@ -5,7 +5,7 @@ import cors from 'cors';
 import checkAuth from './middleware/checkAuth.js';
 import userroute from './routes/ruser.js';
 import quicksearchroute from './routes/rquicksearch.js';
-import providerroute from './routes/rprovider.js';
+import providerroute from './routes/rNewsProvider.js';
 import quiz_router from './routes/rquiz.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -52,5 +52,5 @@ app.use("/api/quiz", checkAuth, quiz_router);
 app.get('/',(req,res)=> {res.status(202).send("Hello Backend myproject1")});
 
 app.listen(port, () => {
-  console.log(listening at port : ${port});
+  console.log('listening at port : ${port}');
 });
