@@ -210,6 +210,37 @@ import {
                 </Box>
               </Tooltip>
 
+              <Tooltip title="Save" placement="bottom" arrow>
+                <IconButton
+                  sx={{
+                    height: "48px",
+                    width: "48px",
+                    alignSelf: "center",
+                    marginBottom: "8px",
+                  }}
+                  aria-label="save"
+                  // onClick={handleBookmarkClick}
+                >
+                  <BookmarkIcon
+                    sx={{ fontSize: "28px", color: "primary.main" }}
+                  />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Share" placement="bottom" arrow>
+                <IconButton
+                  sx={{
+                    height: "48px",
+                    width: "48px",
+                    alignSelf: "center",
+                  }}
+                  aria-label="share"
+                  // onClick={() => setShowShareDialog(true)}
+                >
+                  <ShareButton sx={{ fontSize: "28px" }} />
+                </IconButton>
+              </Tooltip>
+
               </Box>
             </Box>
           </Card>
