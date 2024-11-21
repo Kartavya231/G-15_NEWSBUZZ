@@ -21,3 +21,4 @@ router.get("/get_all_providers", getAllProviders);
 router.get("/get_following_providers", checkAuth, getFollowingProviders);
 router.post("/createchannel", checkAuth, upload.single('logo'), createChannel);
 router.get("/getchannels", checkAuth, getChannels);
+router.delete("/deletechannel/:id", checkAuth, deleteChannel);

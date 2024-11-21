@@ -81,7 +81,25 @@ const getChannels = async (req, res) => {
   }
 };
 
+const deleteChannel = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const channel = await newsProvidermodel.findById(id);
+
+    if (!channel) {
+      return res.status(210).json({ success: false, message: 'Channel not found' });
+    }
+
+    await newsProvidermodel.findByIdAndDelete(id);
+    res.status(202).json({ success: true, message: 'Channel deleted successfully' });
+
+  } catch (error) {
+    res.status(210).json({ success: false, message: error });
+  }
+}
 
 
 
-module.exports = { getAllProviders,getFollowingProviders, createChannel, getChannels};
+
+module.exports = { getAllProviders,getFollowingProviders, createChannel, getChannels, deleteChannel};
