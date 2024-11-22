@@ -51,7 +51,7 @@ const SidebarNavigation = ({ open, setOpen }) => {
     navigate("/login");
   }
 
-  return (  
+  return (
     <>
       <Toolbar>
         <IconButton
