@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import BookmarkCard from '../components/BookmarkCard';
+import { GET } from '../api.js';
 import Skeleton from '@mui/material/Skeleton';
 import Stack from '@mui/material/Stack';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -7,9 +8,13 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { ThemeContext } from '../context/ThemeContext';
+import { useQuery } from '@tanstack/react-query';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,13 +25,34 @@ const Bookmark = () => {
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const PAGE_SIZE = 15;
+  const navigate = useNavigate();
+  // Fetching data using useQuery
+  const { data: articles = [], isLoading, isError } = useQuery({
+    queryKey: ['bookmark'],
+    queryFn: async () => {
+      const resultFromBackend = await GET('/api/userdo/bookmark');
+      // console.log(resultFromBackend);
 
-  // Sample data for testing
-  const articles = [
-    { title: 'Sample Article 1', link: '#', providerImg: '', providerName: 'Provider A' },
-    { title: 'Sample Article 2', link: '#', providerImg: '', providerName: 'Provider B' },
-    // Add more sample articles here
-  ];
+      if (resultFromBackend.data?.success) {
+        // console.log(resultFromBackend.data.articles);
+        return resultFromBackend.data.bookmarks || [];
+      } else if (resultFromBackend.data?.caught) {
+        toast.error(resultFromBackend.data?.message);
+        navigate('/login'); return;
+      }
+      else
+        throw new Error('Error fetching data from backend');
+
+    },
+    onError: (error) => {
+      console.error("GET request error:", error);
+    },
+    staleTime: 0,
+    cacheTime: 0,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
 
   // Filtering articles based on search query
   useEffect(() => {
@@ -41,6 +67,7 @@ const Bookmark = () => {
   // GSAP Animation Setup
   useEffect(() => {
     gsap.defaults({ ease: "power3" });
+    // gsap.set(".box", { y: 100 });
 
     ScrollTrigger.batch(".box", {
       onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, stagger: { each: 0.15, grid: [1, 3] }, overwrite: true }),
@@ -56,6 +83,7 @@ const Bookmark = () => {
 
   // Function to load more articles
   const loadMoreArticles = () => {
+
     setTimeout(() => {
       const currentLength = displayedArticles.length;
       const moreArticles = filteredArticles.slice(currentLength, currentLength + PAGE_SIZE);
@@ -64,8 +92,11 @@ const Bookmark = () => {
     }, 500);
   };
 
+
+
   return (
-    <div style={{ overflow: 'visible', marginTop: "130px" }}>
+
+    <div style={{ overflow: 'visible', marginTop: "130px" }}>  {/* This ensures the content isn't constrained */}
       <Box
         sx={{
           display: 'flex',
@@ -129,37 +160,55 @@ const Bookmark = () => {
         />
       </Box>
 
-      <InfiniteScroll
-        dataLength={displayedArticles.length}
-        next={loadMoreArticles}
-        hasMore={hasMore}
-        loader={
-          <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
-            <Skeleton animation="wave" variant="rounded" width={800} height={140} />
-          </div>
-        }
-        endMessage={
-          displayedArticles.length === 0 ? (
-            <p style={{ textAlign: 'center' }}>
-              <b>No bookmarks added</b>
-            </p>
-          ) : null
-        }
-        style={{ overflow: 'visible' }}
-      >
-        {displayedArticles.map((article, index) => (
-          article && (
-            <div className="box" key={index}>
-              <BookmarkCard
-                title={article.title}
-                link={article.link}
-                providerImg={article.providerImg}
-                providerName={article.providerName}
-              />
+      {isLoading ? (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Stack spacing={2} sx={{ display: "flex", justifyContent: "center" }}>
+            {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
+              <Skeleton animation="wave" key={index} variant="rounded" width={800} height={140} />
+            ))}
+          </Stack>
+        </div>
+      ) : isError ? (
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <span>Error fetching articles.</span>
+        </div>
+      ) : (
+        <InfiniteScroll
+          dataLength={displayedArticles.length}
+          next={loadMoreArticles}
+          hasMore={hasMore}
+          loader={
+            <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
+              <Skeleton animation="wave" variant="rounded" width={800} height={140} />
             </div>
-          )
-        ))}
-      </InfiniteScroll>
+          }
+              endMessage={
+                displayedArticles.length === 0 ? (
+                  <p style={{ textAlign: 'center' }}>
+                    <b>No bookmarks added</b>
+                  </p>
+                ) : null
+              }
+
+          style={{ overflow: 'visible' }}
+        >
+          {displayedArticles.map((article, index) => (
+            article && (
+              <div className="box" key={index}>
+                <BookmarkCard
+                  title={article.title}
+                  link={article.link}
+                  // time={article.time}
+                  providerImg={article.providerImg}
+                  providerName={article.providerName}
+
+                />
+              </div>
+            )
+          ))}
+        </InfiniteScroll>
+      )}
     </div>
   );
 };
