@@ -3,7 +3,6 @@ import top_stories_model from "../models/mtopStories.js";
 import newsProvidermodel from "../models/mnewsProvider.js";
 import puppeteer from "puppeteer";
 
-
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
@@ -60,7 +59,11 @@ const Scrap = async (searchby) => {
 				args: [
 					"--no-sandbox",
 					"--disable-setuid-sandbox",
+					// `--user-data-dir=${userDataDir}`,
+					// "--enable-automation"  // This flag might be necessary for some extensions
 				],
+				// ignoreDefaultArgs: ["--enable-automation"],  // This prevents Puppeteer from using a temporary profile
+				// executablePath: "C:/Program Files/Google/Chrome/Application/chrome.exe",
 				defaultViewport: false,
 			}
 
@@ -75,6 +78,7 @@ const Scrap = async (searchby) => {
 
 		const url = `https://news.google.com/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRFZxYUdjU0JXVnVMVWRDR2dKSlRpZ0FQAQ?hl=en-${country}&gl=${country}&ceid=${country}%3Aen`;
 		await page.goto(url, { waitUntil: "networkidle2" });
+		// await page.waitForTimeout(2000);
 
 		// delay(30000);
 
@@ -97,7 +101,7 @@ const Scrap = async (searchby) => {
 const ScrapTop_stories = async (req, res) => {
 
 
-	const FETCH_INTERVAL = 1000 * 600000;  // 600000 seconds
+	const FETCH_INTERVAL = 1000 * 1;  // 600000 seconds
 
 	let lastFetchTime = null;
 	lastFetchTime = await top_stories_model.findOne({}, { createdAt: 1 });
@@ -164,6 +168,7 @@ const ScrapTop_stories = async (req, res) => {
 				}
 
 			});
+			
 			res.status(202).json({ success: true, articles: articles });
 		}
 		catch (err) {
@@ -181,4 +186,5 @@ const ScrapTop_stories = async (req, res) => {
 		}
 	}
 };
+// module.exports = { ScrapTop_stories };
 export default ScrapTop_stories;
