@@ -1,7 +1,9 @@
 import { Grid, Skeleton } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import HistoryNewsCard from "../components/HistoryNewsCard";
+import { GET } from "../api";
+import { useNavigate } from "react-router-dom";
 
 const parentstyle = {
   marginTop: "100px",
@@ -12,8 +14,27 @@ const parentstyle = {
   margin: "5px",
 };
 
+
 const History = () => {
-  
+  const navigate = useNavigate();
+  const [HistoryArray, setHistoryArray] = useState([]);
+
+  useEffect(() => {
+    const getHistory = async () => {
+      const response = await GET("/api/history/get");
+
+      if (response.data.success) {
+        setHistoryArray(response.data.data);
+      } else if (response.data?.caught) {
+        navigate("/login");
+      } else {
+        console.log(response.message);
+      }
+    };
+
+    getHistory();
+  }, [navigate]);
+
   return (
     <>
       <div
@@ -39,11 +60,6 @@ const History = () => {
                 height={140}
               />
             </div>
-          }
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>Yay! You have seen it all</b>
-            </p>
           }
           style={{ overflow: "visible" }}
         >
