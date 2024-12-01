@@ -1,11 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import { Cluster } from 'puppeteer-cluster';
 
-/**
- * Finds the Chrome user data directory based on the operating system.
- * @returns {string|null} Path to Chrome user data directory or null if not found.
- */
+
 const findChromeUserDataDir = () => {
   let possiblePaths = [];
 
@@ -73,6 +71,62 @@ const scanForLinks = async (page) => {
   );
 
   return articles.filter((article) => article !== null);
+
+
+  
 };
 
-export { findChromeUserDataDir, scanForLinks };
+
+const Scrap = async ({ searchText, site, tbs, gl, location, page, mutedSite }) => {
+if (site) site = `+site:${site}`;
+if (tbs) tbs = `tbs=${tbs}&`;
+if (gl) gl = `gl=${gl}&`;
+if (location) location = `+location:${location}`;
+
+const userDataDir = findChromeUserDataDir();
+if (!userDataDir) {
+  console.error('Unable to find Chrome user data directory. Please specify it manually.');
+  return [];
+}
+
+try {
+  const puppeteerOptions = {
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  };
+
+  const cluster = await Cluster.launch({
+    concurrency: Cluster.CONCURRENCY_PAGE,
+    maxConcurrency: 3,
+    puppeteerOptions,
+  });
+
+  cluster.on('taskerror', (err, data) => {
+    console.log(`Error crawling ${data}: ${err.message}`);
+  });
+
+  let allArticles = [];
+
+  await cluster.task(async ({ page, data: url }) => {
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.864.48 Safari/537.36 Edg/91.0.864.48'
+    );
+    await page.goto(url, { waitUntil: 'networkidle2' });
+    const articles = await scanForLinks(page);
+    allArticles.push(...articles);
+  });
+
+  const searchURL = `https://www.google.com/search?q=${searchText}${site}${mutedSite}${location}&tbm=nws&${gl}${tbs}start=`;
+  await cluster.queue(`${searchURL}${page * 10}`);
+
+  await cluster.idle();
+  await cluster.close();
+
+  return allArticles;
+} catch (error) {
+  console.error('An error occurred while scraping:', error);
+  return [];
+}
+};
+
+export { findChromeUserDataDir, scanForLinks , Scrap};
