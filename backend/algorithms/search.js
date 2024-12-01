@@ -1,11 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
+import { Cluster } from 'puppeteer-cluster';
+import mute_model from '../models/mmute.js';
+import addSearchLocation from '../controllers/csearchLocation.js';
+import newsProvidermodel from '../models/mnewsProvider.js';
 
-/**
- * Finds the Chrome user data directory based on the operating system.
- * @returns {string|null} Path to Chrome user data directory or null if not found.
- */
+
+
 const findChromeUserDataDir = () => {
   let possiblePaths = [];
 
@@ -73,6 +75,108 @@ const scanForLinks = async (page) => {
   );
 
   return articles.filter((article) => article !== null);
+
+
+  
 };
 
-export { findChromeUserDataDir, scanForLinks };
+
+const Scrap = async ({ searchText, site, tbs, gl, location, page, mutedSite }) => {
+if (site) site = `+site:${site}`;
+if (tbs) tbs = `tbs=${tbs}&`;
+if (gl) gl = `gl=${gl}&`;
+if (location) location = `+location:${location}`;
+
+const userDataDir = findChromeUserDataDir();
+if (!userDataDir) {
+  console.error('Unable to find Chrome user data directory. Please specify it manually.');
+  return [];
+}
+
+try {
+  const puppeteerOptions = {
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  };
+
+  const cluster = await Cluster.launch({
+    concurrency: Cluster.CONCURRENCY_PAGE,
+    maxConcurrency: 3,
+    puppeteerOptions,
+  });
+
+  cluster.on('taskerror', (err, data) => {
+    console.log(`Error crawling ${data}: ${err.message}`);
+  });
+
+  let allArticles = [];
+
+  await cluster.task(async ({ page, data: url }) => {
+    await page.setUserAgent(
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.864.48 Safari/537.36 Edg/91.0.864.48'
+    );
+    await page.goto(url, { waitUntil: 'networkidle2' });
+    const articles = await scanForLinks(page);
+    allArticles.push(...articles);
+  });
+
+  const searchURL = `https://www.google.com/search?q=${searchText}${site}${mutedSite}${location}&tbm=nws&${gl}${tbs}start=`;
+  await cluster.queue(`${searchURL}${page * 10}`);
+
+  await cluster.idle();
+  await cluster.close();
+
+  return allArticles;
+} catch (error) {
+  console.error('An error occurred while scraping:', error);
+  return [];
+}
+};
+
+
+const scrapSearch = async (req, res) => {
+  const searchText = req.query.q || 'news';
+  const site = req.query.site || '';
+  const tbs = req.query.tbs || '';
+  const gl = req.query.gl || '';
+  const location = req.query.location || '';
+  const page = req.params.page || 0;
+
+  const mutedSitesObject = await mute_model.findOne({ user: req.user.id }).select('mutedURL -_id');
+  const mutedSitesArray = mutedSitesObject?.mutedURL || [];
+  const mutedSiteString = mutedSitesArray.map((url) => `%20-site:${url}`).join('');
+
+  const articles = await Scrap({ searchText, site, tbs, gl, location, page, mutedSite: mutedSiteString });
+
+  if (articles.length) {
+    const text = location || searchText;
+    await addSearchLocation(req, res, text);
+  }
+
+  articles.forEach(async (article) => {
+    const urlObj = new URL(article.link);
+    const providerBaseURL = `${urlObj.protocol}//${urlObj.hostname}`;
+
+    try {
+      const provider = await newsProvidermodel.findOne({ baseURL: providerBaseURL });
+      if (!provider) {
+        await newsProvidermodel.create({
+          name: article.providerName,
+          baseURL: providerBaseURL,
+          logo: article.providerImg,
+        });
+        console.log(`Provider ${article.providerName} created successfully.`);
+      } else {
+        console.log(`Provider ${article.providerName} already exists.`);
+      }
+    } catch (err) {
+      console.error('Error processing article:', err);
+    }
+  });
+
+  res.status(202).json({ success: true, articles });
+};
+
+
+
+export { findChromeUserDataDir, scanForLinks , Scrap, scrapSearch};
