@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   Card,
@@ -134,6 +135,7 @@ function NewsChannelCard({ id, name, baseUrl, logo, followers, onDelete }) {
           </Card>
         </Fade>
       </Slide>
+
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
