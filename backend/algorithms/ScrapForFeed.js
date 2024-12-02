@@ -1,7 +1,18 @@
+// const { Cluster } = require("puppeteer-cluster");
+// const randomUseragent = require("random-useragent"); // Added random-useragent
+// const fs = require('fs');
+// const path = require('path');
+// const os = require('os');
+
 import { Cluster } from "puppeteer-cluster";
-import puppeteer from "puppeteer";
+// import randomUseragent from "random-useragent"; // Added random-useragent
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
+
+
 
 const scanForLinks = async (page) => {
+
   const element = await page.$('div.SoaBEf');
   if (!element) {
     return [];
@@ -13,10 +24,11 @@ const scanForLinks = async (page) => {
     return articles.map(article => {
       const titleElement = article.querySelector('div.SoAPf div.n0jPhd.ynAwRc.MBeuO.nDgy9d');
       const linkElement = article.querySelector('a.WlydOe');
-      const imgURLElement = article.querySelector('div.gpjNTe div.YEMaTe.JFSfwc div.uhHOwf.BYbUcd img');
+      const imgURLElement = article.querySelector('div.gpjNTe div.YEMaTe.JFSfwc div.uhHOwf.BYbUcd img'); // Update with the correct selector
       const timeElement = article.querySelector('div.SoAPf div.OSrXXb.rbYSKb.LfVVr');
-      const providerImgElement = article.querySelector('div.SoAPf div.MgUUmf.NUnG9d g-img.QyR1Ze.ZGomKf img');
-      const providerNameElement = article.querySelector('div.SoAPf div.MgUUmf.NUnG9d span');
+      const providerImgElement = article.querySelector('div.SoAPf div.MgUUmf.NUnG9d g-img.QyR1Ze.ZGomKf img'); // Update with the correct selector
+      // const providerImgElement2 = article.querySelector('div.MCAGUe div.oovtQ img.qEdqNd.y3G2Ed'); // Update with the correct selector
+      const providerNameElement = article.querySelector('div.SoAPf div.MgUUmf.NUnG9d span'); // Update with the correct selector
       const someTextElement = article.querySelector('div.SoAPf div.GI74Re.nDgy9d');
 
       const articleData = {
@@ -30,6 +42,8 @@ const scanForLinks = async (page) => {
       };
 
       return (articleData && articleData.title && articleData.someText && articleData.link && articleData.time && articleData.providerImg && articleData.providerName) ? articleData : null;
+
+
     });
   });
 
@@ -37,21 +51,23 @@ const scanForLinks = async (page) => {
 };
 
 const ScrapForFeed = async (SearchTexts) => {
+
+
   // SearchTexts is array of only one element.
+
   if (SearchTexts.length === 0) {
     SearchTexts[0] = "news";
   }
 
   try {
     const puppeteerOptions = {
-      headless: true, // Set to false if you want to see the browser
-      args: [
-        '--no-sandbox', 
-        '--disable-setuid-sandbox', 
-        '--disable-gpu', 
-        '--disable-dev-shm-usage'
-      ]
+      args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
+      // defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath() || puppeteer.executablePath(),
+      // headless: chromium.headless,
+      ignoreDefaultArgs: chromium.ignoreDefaultArgs,
     };
+
 
     const cluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_PAGE,
@@ -65,16 +81,44 @@ const ScrapForFeed = async (SearchTexts) => {
 
     let allArticles = [];  // Array to hold all articles
 
+
     await cluster.task(async ({ page, data: url }) => {
+
+      // console.log(url);
+
+      // await page.setUserAgent(
+      //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36"
+      // ); // working 
+
+      // await page.setUserAgent(
+      //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0"
+      // );
+
+      // await page.setUserAgent(
+      //   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+      // );
+      // await page.setUserAgent(
+      //   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.864.48 Safari/537.36 Edg/91.0.864.48"
+      // );
+
+
+
+      // const userAgent = randomUseragent.getRandom(); // Get a random user agent
+      // await page.setUserAgent(userAgent); // Set the random user agent
       await page.goto(url, { waitUntil: "networkidle2" });
       const articles = await scanForLinks(page);
       console.log(url, articles.length);
 
       allArticles = [...allArticles, ...articles];  // Collect articles from each page
+
     });
 
+
+
     console.log(`Starting search for ${SearchTexts}`);
+    // const searchURL = `https://www.google.com/search?q=${searchText}+site%3A${site}&tbm=nws&tbs=${tbs}&start=`;
     const searchURL = `https://www.google.com/search?q=`;
+
 
     console.log(SearchTexts);
 
@@ -94,27 +138,7 @@ const ScrapForFeed = async (SearchTexts) => {
   }
 };
 
-// Main function to demonstrate usage
-async function main() {
-  try {
-    const searchTerms = ["technology", "AI", "innovation"];
-    const scrapedArticles = await ScrapForFeed(searchTerms);
-    
-    console.log("Total articles scraped:", scrapedArticles.length);
-    
-    // Log details of first few articles
-    scrapedArticles.slice(0, 5).forEach((article, index) => {
-      console.log(`\nArticle ${index + 1}:`);
-      console.log(`Title: ${article.title}`);
-      console.log(`Provider: ${article.providerName}`);
-      console.log(`Link: ${article.link}`);
-    });
-  } catch (error) {
-    console.error("Error in main function:", error);
-  }
-}
 
-// Uncomment to run directly
-// main();
 
-export { ScrapForFeed, main };
+export { ScrapForFeed };
+// module.exports = { ScrapForFeed };
