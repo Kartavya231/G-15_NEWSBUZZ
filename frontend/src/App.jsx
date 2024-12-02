@@ -12,7 +12,7 @@ import Signup from './pages/Signup';
 import MyFeed from './pages/MyFeed';
 import Bookmark from './pages/Bookmark.jsx';
 import PageNotFound from './pages/PageNotFound';
-import { ThemeContextProvider, ThemeContext } from './context/ThemeContext';
+import { ThemeContextProvider, ThemeContext } from '../context/ThemeContext.js';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
@@ -25,7 +25,7 @@ import ProviderPage from './pages/ProviderPage.jsx';
 import { Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import quiz from './images/quiz.png';
-import { GET } from './api';
+import { GET } from './api.js';
 
 const theme = createTheme({
   typography: {

@@ -49,4 +49,4 @@ const DELETE = async (url, data) => {
   }
 };
 
-export { GET, POST,DELETE };
+export { GET, POST, DELETE };
