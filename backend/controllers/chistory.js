@@ -6,7 +6,6 @@ const gethistory = async (req, res, next) => {
     const user_id = req.user.id;
     let userHistory = await history_model.findOne({ userid: user_id });
 
-    console.log(userHistory.historyData);
     if (userHistory) {
         res.status(202).json({ success: true, data: userHistory.historyData });
     } else {
@@ -17,7 +16,7 @@ const gethistory = async (req, res, next) => {
 const removehistory = async (req, res, next) => {
     const user_id = req.user.id;
 
-    const { baseURL } = req.body();
+    const { baseURL } = req.body;
 
     let userHistory = await history_model.findOne({ userid: user_id });
 
@@ -58,4 +57,19 @@ const addhistory = async (req, res, next) => {
 }
 
 
-export { gethistory, addhistory, removehistory };
+const removeallhistory = async (req, res, next) => {
+    const user_id = req.user.id;
+
+    let userHistory = await history_model.findOne({ userid: user_id });
+
+    if (userHistory) {
+        userHistory.historyData = [];
+        await userHistory.save();
+        res.status(202).json({ success: true, message: "All History Articles Deleted" });
+    }
+    else {
+        res.status(210).json({ success: false, message: "No History Found" });
+    }
+}
+
+export { gethistory, addhistory, removehistory, removeallhistory };
