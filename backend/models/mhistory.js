@@ -32,4 +32,4 @@ const historyschema = new Schema({
 
 const history_model = mongoose.model("History", historyschema);
 
-export default history_model;
+export {history_model};
