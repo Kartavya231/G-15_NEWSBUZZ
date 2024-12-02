@@ -5,8 +5,7 @@
 import express from "express";
 const router = express.Router();
 // import { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles, getNumLikes, getNumComments } from "../controllers/cuserdo.js";
-import temp from "../controllers/cuserdo.js";
-const { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles, getNumLikes, getNumComments } = temp;
+import { addBookmarkArticle, deleteBookmarkArticle, getBookmarkArticle, isBookmarked, addLikeArticle, deleteLikeArticle, isLiked, addFollow, deleteFollow, isFollowed, addComment, deleteComment, getCommentsOfArticles, getNumLikes, getNumComments } from "../controllers/cuserdo.js";
 
 router.post("/isbookmarked", isBookmarked);
 
@@ -35,4 +34,6 @@ router.post("/numComments", getNumComments);
 
 
 
-export default router;;
+// export default router;
+
+export { router };

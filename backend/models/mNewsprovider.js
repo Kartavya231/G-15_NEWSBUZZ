@@ -1,5 +1,6 @@
-//const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 import mongoose from 'mongoose';
+
 
 const newsProviderschema = new mongoose.Schema({
   name: {
@@ -18,10 +19,10 @@ const newsProviderschema = new mongoose.Schema({
   followers: {
     type: [String],
   },
-provider_id: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: 'user',
-}
+  provider_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'user',
+  }
 },
   {
     timestamps: true
@@ -29,4 +30,4 @@ provider_id: {
 
 const newsProvidermodel = mongoose.model('newsProvider', newsProviderschema);
 
-export default newsProvidermodel
+export {newsProvidermodel};

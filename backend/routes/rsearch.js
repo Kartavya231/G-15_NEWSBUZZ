@@ -5,10 +5,11 @@ import express from "express";
 const router = express.Router();
 
 
-import temp from "../algorithms/search.js";
-
-const { scrapSearch } = temp;
+import { scrapSearch } from "../algorithms/search.js";
 
 router.get("/:page", scrapSearch);
+// router.get("/:page", (req,res)=> {res.send("Hello")});
 
-export default router;;
+// export default router;
+
+export { router };
