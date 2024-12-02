@@ -4,9 +4,34 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "netlify deploy --prod"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cloudinary": "^2.5.0",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.2.0",
+    "cryptojs": "^2.5.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "googleapis": "^144.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
+    "nodemon": "^3.1.7",
+    "puppeteer-cluster": "^0.23.0",
+    "puppeteer-core": "^23.8.0",
+    "random-useragent": "^0.5.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@sparticuz/chromium": "^131.0.0"
+  },
+  "type": "module"
 }
