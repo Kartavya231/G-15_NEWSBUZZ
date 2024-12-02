@@ -2,7 +2,7 @@
 // const usermodel = require('../models/muser.js');
 // const cloudinary_v2 = require('../utils/cloudinary').v2;
 
-import newsProvidermodel from '../models/mNewsprovider.js';
+import newsProvidermodel from '../models/mnewsProvider.js';
 import usermodel from '../models/muser.js';
 // import cloudinary_v2 from '../utils/cloudinary.js';
 
@@ -22,7 +22,7 @@ const getAllProviders = async (req, res) => {
 const getFollowingProviders = async (req, res) => {
   try {
 
-    const user = await usermodel.findById(req.user.id).populate('following');
+    const user = await usermodel.findById(req.user.id);
 
     const following = user.following;
 
