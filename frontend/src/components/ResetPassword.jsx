@@ -126,18 +126,18 @@ const ResetPassword = ({ setShowModal }) => {
     const response = await POST('/api/changepassword', { password: EncryptNewPassword, CurrentPassword: EncryptOldPassword });
     // console.log(response.data);
 
-    if (response.data.success) {
-      toast.success(response.data.message);
+    if (response.data?.success) {
+      toast.success(response.data?.message);
       setShowModal(false);
       return;
 
     } else if (response.data?.caught) {
-      // toast.error(response.data.message);
+      // toast.error(response.data?.message);
       setShowModal(false);
       navigate('/login'); return;
       return;
     } else {
-      toast.error(response.data.message);
+      toast.error(response.data?.message);
     }
 
 

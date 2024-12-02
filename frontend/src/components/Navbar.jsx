@@ -17,12 +17,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs';
-import { GET, POST, DELETE } from '../api';
+import { GET, POST } from '../api';
 // import AddRoundedIcon from '@mui/icons-material/AddRounded';
 // import zIndex from '@mui/material/styles/zIndex';
 import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 import TravelExploreRoundedIcon from '@mui/icons-material/TravelExploreRounded';
 import toast from 'react-hot-toast';
+import logo from '../images/logo.jpg';
 
 const Navbar = () => {
 
@@ -135,6 +136,8 @@ const Navbar = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
+    console.log('Search:', searchQuery);
+    console.log(searchQuery.trim());
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
     }
@@ -239,23 +242,32 @@ const Navbar = () => {
   };
 
 
-  const handleRightClick = (e, textToRemove) => {
+  const handleRightClick = async (e, textToRemove) => {
     e.preventDefault();
     const confirmed = window.confirm(`Do you want to remove "${textToRemove}"?`);
     if (confirmed) {
 
-      const response = DELETE('/api/quicksearch/delete', { quickSearchText: textToRemove });
-      response.then(() => {
+      const response = await POST('/api/quicksearch/delete', { quickSearchText: textToRemove });
+      try {
+        console.log(response.data);
         if (response.data?.caught) {
+          console.log("caught");
           navigate('/login'); return;
           // toast.error(response.data?.message);
         }
         else if (response.data?.success) {
+          console.log("success");
           setQuickSearchText(quickSearchText.filter(text => text !== textToRemove)); // Remove the button from UI
+          toast.success(response.data?.message);
         }
-      }).catch((error) => {
-        console.error('Error removing quick search:', error);
-      });
+        else {
+          toast.error(response.data?.message);
+        }
+      }
+      catch (error) {
+        console.error('Error deleting quick search:', error);
+        toast.error('Error deleting quick search');
+      }
     }
   };
 
@@ -277,21 +289,39 @@ const Navbar = () => {
     <>
       <nav className="navbar navbar-expand-lg" style={navbarStyle}>
         <div className="container-fluid">
-          <Link className={`navbar-brand ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/">News Aggregator</Link>
+          {/* <Link className={`navbar-brand ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/">NewsBuzz</Link> */}
+          <Link className={`navbar-brand ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/">
+            <img src={logo} alt="NewsBuzz" style={{ height: '40px' }} />
+          </Link>
+
 
           <div className="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className={`nav-link active ${mode === 'dark' ? 'text-dark' : 'text-light'}`} aria-current="page" to="/">Home</Link>
+                <Link
+                  className={`nav-link active ${mode === 'dark' ? 'text-dark' : 'text-light'}`}
+                  aria-current="page"
+                  to="/"
+                  style={{ fontSize: '18px' }} // Adjust the size here
+                >
+                  Home
+                </Link>
               </li>
               <li className="nav-item">
-                <Link className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`} to="/providers/all">Providers</Link>
+                <Link
+                  className={`nav-link ${mode === 'dark' ? 'text-dark' : 'text-light'}`}
+                  to="/providers/all"
+                  style={{ fontSize: '18px' }} // Adjust the size here
+                >
+                  Providers
+                </Link>
               </li>
             </ul>
 
+
             {TokenExist && (<>
               <div>
-                <form className="d-flex mx-auto" onSubmit={handleSearch} style={{ flexGrow: 1, justifyContent: 'center' }}>
+                <div className="d-flex mx-auto" style={{ flexGrow: 1, justifyContent: 'center' }}>
                   <input
                     className="form-control me-2"
                     type="search"
@@ -319,6 +349,7 @@ const Navbar = () => {
                         transition: 'background-color 0.3s ease', // Smooth color transition
                         color: "black"
                       }}
+                      onClick={handleSearch}
                     >
                       Search
                     </Button>
@@ -471,7 +502,7 @@ const Navbar = () => {
                       </Box>
                     </Menu>
                   </div>
-                </form>
+                </div>
 
 
                 {advancedSearchOpen && (
