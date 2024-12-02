@@ -235,22 +235,12 @@ const NewsCard = (props) => {
               </Tooltip>
 
               <Tooltip title="Share" arrow>
-                <IconButton onClick={() => setShowShareDialog(true)}>
+                <IconButton onClick={loginPage}>
                   <ShareButton />
                 </IconButton>
               </Tooltip>
             </Box>
           </Box>
-
-          {showShareDialog && (
-            <Box ref={shareDialogRef}>
-              <ShareDialog
-                open={showShareDialog}
-                onClose={() => setShowShareDialog(false)}
-                link={props.link}
-              />
-            </Box>
-          )}
         </Card>
       </Box>
     </Box>
