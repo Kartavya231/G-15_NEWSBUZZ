@@ -15,6 +15,12 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from 'react-router-dom';
 
 const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
+
+
+
+  const [isFollowing, setIsFollowing] = useState();
+  const [isShrinking, setIsShrinking] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
@@ -37,19 +43,46 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
     window.open(baseURL, '_blank');
   };
 
-  const [isFollowing, setIsFollowing] = useState();
-  const [isShrinking, setIsShrinking] = useState(false);
+  const HandleMute = async () => {
+    try {
+      const endpoint = isMuted ? '/api/mute/remove' : '/api/mute/add';
+      const payload = { baseURL: baseURL };
+
+      const response = await POST(endpoint, payload);
+
+      if (response.data?.success === true) {
+
+        setIsMuted((prev) => !prev);
+
+        toast.success(isMuted ? 'You have UnMuted successfully!' : 'You have Muted successfully!');
+
+      } else if (response.data?.caught) {
+        navigate("/login");
+        // toast.error(response.data?.message);
+      }
+      else {
+        console.error(response.data?.message);
+        toast.error('Something went wrong, please try again later.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('An error occurred. Please try again.');
+    }
+  };
+
+
+
 
   useEffect(() => {
     const checkFollow = async () => {
       try {
         const response = await POST('/api/userdo/isfollowed', { baseURL: baseURL });
-        if (response.data.success) {
+        if (response.data?.success) {
           setIsFollowing(response.data.isFollowing);
         }
         else if (response.data?.caught) {
           navigate("/login");
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
       } catch (error) {
         console.error('Failed to check follow status:', error);
@@ -58,6 +91,26 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
     checkFollow();
   }, [baseURL, navigate]);
 
+
+  useEffect(() => {
+    const checkMuted = async () => {
+      try {
+        const response = await POST('/api/mute/get', { baseURL: baseURL });
+        if (response.data?.success) {
+          setIsMuted(response.data.isMuted);
+        }
+        else if (response.data?.caught) {
+          navigate("/login");
+          // toast.error(response.data?.message);
+        }
+      } catch (error) {
+        console.error('Failed to check mute status:', error);
+      }
+    };
+    checkMuted();
+  }, [baseURL, navigate]);
+
+
   const toggleFollow = async () => {
     try {
       const endpoint = isFollowing ? '/api/userdo/unfollow' : '/api/userdo/follow';
@@ -65,7 +118,7 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
 
       const response = await POST(endpoint, payload);
 
-      if (response.data.success === true) {
+      if (response.data?.success === true) {
         setIsFollowing((prev) => !prev);
         toast.success(isFollowing ? 'You have UnFollowed successfully!' : 'You have Followed successfully!');
         if (isFollowing && provider === "following") {
@@ -76,10 +129,10 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
         }
       } else if (response.data?.caught) {
         navigate("/login");
-        // toast.error(response.data.message);
+        // toast.error(response.data?.message);
       }
       else {
-        console.error(response.data.message);
+        console.error(response.data?.message);
         toast.error('Something went wrong, please try again later.');
       }
     } catch (error) {
@@ -127,6 +180,7 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
       >
         <MenuItem onClick={HandleSeeArticles}>See Articles</MenuItem>
         <MenuItem onClick={HandleGoToSite}>Go to Site</MenuItem>
+        <MenuItem onClick={HandleMute}> {isMuted ? "UnMute" : "Mute"} </MenuItem>
       </Menu>
 
       <CardContent sx={{
@@ -163,6 +217,8 @@ const NewsProviderCard = ({ name, logoUrl, baseURL, provider, onUnfollow }) => {
                 maxWidth: '100%',
                 maxHeight: '100%',
                 objectFit: 'contain',
+                height:'100%',
+                width:'100%'
               }}
             />
           ) : (
