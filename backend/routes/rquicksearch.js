@@ -10,7 +10,9 @@ router.get("/get", getQuickSearch);
 
 router.post("/add", addQuickSearch);
 
-router.delete("/delete", deleteQuickSearch);
+router.post("/delete", deleteQuickSearch);
 
 
-export default router;
+// export default router;;
+
+export { router };
