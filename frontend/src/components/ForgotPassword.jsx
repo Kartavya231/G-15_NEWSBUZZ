@@ -80,7 +80,7 @@ const ForgotPassword = ({ setShowModal }) => {
     setLoading(true); // Start loading
 
     try {
-      const result = await POST('/api/sendemail/forgotpassword', { email });
+        const result = await POST('/api/sendemail/forgotpassword', { email, CheckUserExist: true });
       if (result.data?.success) {
         toast.success(result.data?.message);
         setCurrentStep(2);
