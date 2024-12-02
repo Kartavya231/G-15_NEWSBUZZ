@@ -28,19 +28,18 @@ const UserProfile = () => {
 
       const checkauth = await GET('/api/checkauth');
       if (checkauth.data?.caught) {
-        toast.error(checkauth.data.message);
+        toast.error(checkauth.data?.message);
         navigate('/login');
-        return;
       }
 
       try {
         const response = await GET('/api/user/userprofile/get');
-        if (response.data.success === false) {
-          console.log('Error:', response.data.message);
+        if (response.data?.success === false) {
+          console.log('Error:', response.data?.message);
           return;
         }
         if (response.data?.caught) {
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
           navigate('/login'); return;
         }
         const { username, firstName, lastName, age, phoneNo, email, topics } = response.data.user;
@@ -82,11 +81,11 @@ const UserProfile = () => {
     };
     const response = await POST('/api/user/userprofile/update', updatedData);
 
-    if (response.data.success) {
-      toast.success(response.data.message);
+    if (response.data?.success) {
+      toast.success(response.data?.message);
     }
     else if (response.data?.caught) {
-      // toast.error(response.data.message);
+      // toast.error(response.data?.message);
       navigate('/login'); return;
     }
   };
