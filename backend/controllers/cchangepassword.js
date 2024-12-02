@@ -1,7 +1,7 @@
 // const usermodel = require("../models/muser");
 // const CryptoJS = require('crypto-js');
 
-import usermodel from "../models/muser.js";
+import {usermodel} from "../models/muser.js";
 // const CryptoJS = require('crypto-js');
 import CryptoJS from 'crypto-js';
 
@@ -41,4 +41,4 @@ const ChangePassword = async (req, res) => {
 
 // module.exports = { ChangePassword };
 
-export default ChangePassword;
+export { ChangePassword };
