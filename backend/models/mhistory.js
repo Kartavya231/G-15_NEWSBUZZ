@@ -1,11 +1,14 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+// const mongoose = require("mongoose");
+// const Schema = mongoose.Schema;
+
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 
 const historyschema = new Schema({
 
     userid: {
-        type: Schema.Type.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "user"
     },
     historyData: [
@@ -27,5 +30,6 @@ const historyschema = new Schema({
     ]
 });
 
-const History = mongoose.model("History", historyschema);
-module.exports = History;
+const history_model = mongoose.model("History", historyschema);
+
+export default history_model;
