@@ -7,10 +7,7 @@ import {
   Typography,
   Zoom,
 } from "@mui/material";
-import { BookmarkIcon, HeartIcon } from "lucide-react";
 import React, { useContext } from "react";
-import InsertCommentRoundedIcon from "@mui/icons-material/InsertCommentRounded";
-import ShareButton from "@mui/icons-material/Share";
 import { ThemeContext } from "../context/ThemeContext";
 const HistoryNewsCard = (props) => {
   const formatDate = (dateString) => {
@@ -48,6 +45,7 @@ const HistoryNewsCard = (props) => {
             border: "none",
             boxShadow: "none",
             width: "100%",
+            height: "150px",
             backgroundColor:
               mode === "light" ? "rgb(246, 246, 246)" : "rgb(50, 50, 50)",
             "&:hover": {
@@ -170,94 +168,7 @@ const HistoryNewsCard = (props) => {
                 {formatDate(props.time)}
               </Typography>
             </Box>
-            <Box
-              className="action-buttons"
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                alignItems: "center",
-                opacity: 0,
-                transition: "opacity 0.2s ease",
-                visibility: "hidden",
-              }}
-            >
-              <Tooltip title="Save" placement="bottom" arrow>
-                <IconButton
-                  sx={{
-                    height: "48px",
-                    width: "48px",
-                    alignSelf: "center",
-                    marginBottom: "8px",
-                  }}
-                  aria-label="save"
-                  // onClick={handleBookmarkClick}
-                >
-                  <BookmarkIcon
-                    sx={{ fontSize: "28px", color: "primary.main" }}
-                  />
-                </IconButton>
-              </Tooltip>
 
-              <Tooltip title="Like" placement="bottom" arrow>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <IconButton
-                    sx={{
-                      height: "48px",
-                      width: "48px",
-                      alignSelf: "center",
-                      marginBottom: "4px",
-                    }}
-                    aria-label="like"
-                    //   onClick={handleLikeClick}
-                  >
-                    <HeartIcon sx={{ fontSize: "28px", color: "red" }} />
-                  </IconButton>
-                </Box>
-              </Tooltip>
-
-              <Tooltip title="Comments" placement="bottom" arrow>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                  }}
-                >
-                  <IconButton
-                    sx={{
-                      height: "48px",
-                      width: "48px",
-                      alignSelf: "center",
-                      marginBottom: "8px",
-                    }}
-                    aria-label="comments"
-                    //   onClick={handleCommentsClick}
-                  >
-                    <InsertCommentRoundedIcon sx={{ fontSize: "28px" }} />
-                  </IconButton>
-                </Box>
-              </Tooltip>
-
-              <Tooltip title="Share" placement="bottom" arrow>
-                <IconButton
-                  sx={{
-                    height: "48px",
-                    width: "48px",
-                    alignSelf: "center",
-                  }}
-                  aria-label="share"
-                  // onClick={() => setShowShareDialog(true)}
-                >
-                  <ShareButton sx={{ fontSize: "28px" }} />
-                </IconButton>
-              </Tooltip>
-            </Box>
           </Box>
         </Card>
       </Box>
