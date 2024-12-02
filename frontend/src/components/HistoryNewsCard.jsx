@@ -274,6 +274,10 @@ import {
 } from "@mui/material";
 import React, { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
+import AutoDeleteRoundedIcon from '@mui/icons-material/AutoDeleteRounded';
+import { POST } from '../api'
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 const HistoryNewsCard = (props) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -284,6 +288,33 @@ const HistoryNewsCard = (props) => {
     });
   };
   const { mode } = useContext(ThemeContext);
+
+  const navigate = useNavigate();
+  const handleDeleteClick = async () => {
+
+    const response = await POST("/api/history/remove", { baseURL: props.link });
+
+    if (response.data?.success) {
+      toast.success(response.data?.message);
+      // window.location.reload();
+
+      props.setHistoryArray((prev) => { return prev.filter((item) => item._id !== props._id) } );
+    }
+    else if (response.data?.caught) {
+      // window.location.reload();
+      navigate("/login");
+    }
+    else {
+      toast.error(response.data?.message);
+    }
+  }
+
+
+  const handleClick = () => {
+    window.open(props.link, "_blank");
+  };
+
+
 
   return (
     <>
@@ -321,40 +352,7 @@ const HistoryNewsCard = (props) => {
         >
           <Box sx={{ display: "flex", flexDirection: "row" }}>
             <CardContent sx={{ flex: 1 }}>
-              {/* Provider Image and Name */}
-              {/* <div
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "40px",
-                  overflow: "hidden",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  {props.providerImg && (
-                    <img
-                      src={props.providerImg}
-                      alt="Provider Logo"
-                      style={{
-                        maxWidth: "40px",
-                        maxHeight: "40px",
-                        objectFit: "contain",
-                      }}
-                    />
-                  )}
-                  {props.providerName && (
-                    <Typography
-                      variant="subtitle2"
-                      color="text.secondary"
-                      style={{ marginLeft: "10px" }}
-                    >
-                      {props.providerName}
-                    </Typography>
-                  )}
-                </div>
-              </div> */}
+
 
               {/* Title with Tooltip */}
               <Tooltip
@@ -367,7 +365,7 @@ const HistoryNewsCard = (props) => {
                   variant="h6"
                   component="div"
                   gutterBottom
-                  // onClick={handleClick}
+                  onClick={handleClick}
                   sx={{
                     cursor: "pointer",
                     color: "rgb(30, 144, 255)",
@@ -386,27 +384,7 @@ const HistoryNewsCard = (props) => {
               )}
             </CardContent>
 
-            {/* Article Image
-            {props.imgURL && (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: 2,
-                }}
-              >
-                <img
-                  src={props.imgURL}
-                  alt="Article"
-                  style={{
-                    maxWidth: "150px",
-                    maxHeight: "150px",
-                    objectFit: "cover",
-                  }}
-                />
-              </Box>
-            )} */}
+
           </Box>
 
           {/* Time Display */}
@@ -433,6 +411,38 @@ const HistoryNewsCard = (props) => {
                 {formatDate(props.time)}
               </Typography>
             </Box>
+
+
+
+            <Box
+              className="action-buttons"
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "center",
+                opacity: 0,
+                transition: "opacity 0.2s ease",
+                visibility: "hidden",
+              }}
+            >
+              <Tooltip title="Save" placement="bottom" arrow>
+                <IconButton
+                  sx={{
+                    height: "48px",
+                    width: "48px",
+                    alignSelf: "center",
+                    marginBottom: "8px",
+                  }}
+                  aria-label="save"
+                  onClick={handleDeleteClick}
+                >
+                  <AutoDeleteRoundedIcon />
+                </IconButton>
+              </Tooltip>
+            </Box>
+
+
+
 
           </Box>
         </Card>

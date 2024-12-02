@@ -22,7 +22,8 @@ const NewsCard = (props) => {
   const isSearchPage =
     location.pathname === "/search" || location.pathname === "/myfeed";
 
-  
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const shareDialogRef = useRef(null);
   const navigate = useNavigate();
 
 
@@ -31,7 +32,27 @@ const NewsCard = (props) => {
     navigate("/login");
   };
 
- 
+  const handleClickOutside = (event) => {
+    if (
+      shareDialogRef.current &&
+      !shareDialogRef.current.contains(event.target)
+    ) {
+      setShowShareDialog(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showShareDialog) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showShareDialog]);
+
   return (
     <Box
       sx={{
@@ -214,12 +235,22 @@ const NewsCard = (props) => {
               </Tooltip>
 
               <Tooltip title="Share" arrow>
-                <IconButton onClick={loginPage}>
+                <IconButton onClick={() => setShowShareDialog(true)}>
                   <ShareButton />
                 </IconButton>
               </Tooltip>
             </Box>
           </Box>
+
+          {showShareDialog && (
+            <Box ref={shareDialogRef}>
+              <ShareDialog
+                open={showShareDialog}
+                onClose={() => setShowShareDialog(false)}
+                link={props.link}
+              />
+            </Box>
+          )}
         </Card>
       </Box>
     </Box>
