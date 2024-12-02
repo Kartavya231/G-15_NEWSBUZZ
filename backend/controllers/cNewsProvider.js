@@ -1,5 +1,13 @@
-const newsProvidermodel = require('../models/mNewsprovider.js');
-const usermodel = require('../models/muser.js');
+// const newsProvidermodel = require('../models/mnewsProvider.js');
+// const usermodel = require('../models/muser.js');
+// const cloudinary_v2 = require('../utils/cloudinary').v2;
+
+import newsProvidermodel from '../models/mNewsprovider.js';
+import usermodel from '../models/muser.js';
+// import cloudinary_v2 from '../utils/cloudinary.js';
+
+import { v2 as cloudinary_v2 } from 'cloudinary';
+
 
 const getAllProviders = async (req, res) => {
 
@@ -27,6 +35,8 @@ const getFollowingProviders = async (req, res) => {
     res.status(210).json({ success: false, message: "Error while geting Following Providers" });
   }
 };
+
+
 const createChannel = async (req, res) => {
   const { name, baseURL } = req.body;
 
@@ -99,7 +109,10 @@ const deleteChannel = async (req, res) => {
   }
 }
 
+  
 
+// module.exports = { getAllProviders, getFollowingProviders, createChannel, getChannels, deleteChannel };
 
+// export default { getAllProviders, getFollowingProviders, createChannel, getChannels, deleteChannel };
 
-module.exports = { getAllProviders,getFollowingProviders, createChannel, getChannels, deleteChannel};
+export { getAllProviders, getFollowingProviders, createChannel, getChannels, deleteChannel };
