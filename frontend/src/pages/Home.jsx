@@ -8,8 +8,6 @@ import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { ThemeContext } from "../context/ThemeContext";
 import { useQuery } from "@tanstack/react-query";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import InfiniteScroll from "react-infinite-scroll-component";
 import UnLoggedNewsCard from "../components/UnLoggedNewsCard.jsx";
 import { useNavigate } from "react-router-dom";
@@ -85,29 +83,6 @@ const Home = () => {
     setHasMore(filtered.length > PAGE_SIZE);
   }, [searchQuery, articles]);
 
-  useEffect(() => {
-    gsap.defaults({ ease: "power3" });
-
-    ScrollTrigger.batch(".box", {
-      onEnter: (batch) =>
-        gsap.to(batch, {
-          opacity: 1,
-          y: 0,
-          stagger: { each: 0.15, grid: [1, 3] },
-          overwrite: true,
-        }),
-      onLeave: (batch) =>
-        gsap.set(batch, { opacity: 0, y: -100, overwrite: true }),
-      onEnterBack: (batch) =>
-        gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
-      onLeaveBack: (batch) =>
-        gsap.set(batch, { opacity: 0, y: 100, overwrite: true }),
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
-  }, [displayedArticles]);
 
   const loadMoreArticles = () => {
     setTimeout(() => {
