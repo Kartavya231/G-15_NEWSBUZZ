@@ -6,6 +6,7 @@ import { GET } from "../api";
 import { useNavigate } from "react-router-dom";
 
 const parentstyle = {
+  // backgroundColor:"black",
   marginTop: "100px",
   display: "flex",
   alignItems: "center",
@@ -14,10 +15,60 @@ const parentstyle = {
   margin: "5px",
 };
 
+// const HistoryArray = [
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+//   {
+//     title: "Title",
+//     link: "Link",
+//     time: "Time",
+//     providerImg: "ProviderImg",
+//   },
+// ];
+
+
+
+
 
 const History = () => {
+
   const navigate = useNavigate();
   const [HistoryArray, setHistoryArray] = useState([]);
+
 
   useEffect(() => {
     const getHistory = async () => {
@@ -35,16 +86,22 @@ const History = () => {
     getHistory();
   }, [navigate]);
 
+
+
+
   return (
     <>
       <div
         style={{
           overflow: "visible",
           marginTop: "130px",
+          //   backgroundColor: "black"
         }}
       >
         <InfiniteScroll
           dataLength={HistoryArray.length}
+          //   next={loadMoreArticles}
+          //   hasMore={hasMore}
           loader={
             <div
               style={{
@@ -72,10 +129,11 @@ const History = () => {
                 sm={10}
                 sx={{
                   position: "relative",
+                  //   backgroundColor: "black"
                 }}
                 style={parentstyle}
               >
-                <div style={{ gridTemplateColumns: "1fr" }}>
+                <div style={{ gridTemplateColumns: "1fr", height: "150px" }}>
                   {HistoryArray.map(
                     (article, index) =>
                       article && (
@@ -84,6 +142,8 @@ const History = () => {
                           title={article.title}
                           link={article.link}
                           time={article.time}
+                        // providerImg={article.providerImg}
+                        // providerName={article.providerName}
                         />
                       )
                   )}
