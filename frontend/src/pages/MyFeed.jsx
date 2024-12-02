@@ -38,7 +38,7 @@
 //     setIsLoading(true);
 //     try {
 //       const response = await GET(urls[pageIndex]);
-//       if (response.data.success === false) {
+//       if (response.data?.success === false) {
 //         throw new Error("No more articles found");
 //       }
 
@@ -217,7 +217,9 @@
 
 // export default MyFeed;
 
-import React, { useEffect, useState, useContext, useRef, useCallback, useMemo } from 'react';
+
+
+import React, { useEffect, useState, useContext, useRef, useCallback } from 'react';
 import FeedNewsCard from '../components/FeedNewsCard.jsx';
 import Skeleton from '@mui/material/Skeleton';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -225,10 +227,10 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import TextField from '@mui/material/TextField';
 import { Box, Grid } from '@mui/material';
 import { ThemeContext } from '../context/ThemeContext';
-import { GET } from "../api.js";
 import { Stack } from 'react-bootstrap';
-import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
+ import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import config from '../config';
 
 const parentstyle = {
   // backgroundColor:"black",
@@ -251,38 +253,64 @@ const MyFeed = () => {
   const navigate = useNavigate();
 
   // URLs to fetch articles from (based on pageIndex)
-  const urls = useMemo(() => {
-    return [
-      "/api/myfeed/getmyfeed/text/1",
-      "/api/myfeed/getmyfeed/text/2",
-      "/api/myfeed/getmyfeed/text/3",
-      "/api/myfeed/getmyfeed/text/4",
-      "/api/myfeed/getmyfeed/topic/1",
-      "/api/myfeed/getmyfeed/topic/2"
-    ];
-  }, []);
+  
 
   // Function to load more articles
   const loadMoreArticles = useCallback(async () => {
 
-    const checkauth = await GET("/api/checkauth");
+    // const checkauth = await GET("/api/checkauth");
 
-    if (checkauth.data?.caught) {
-      toast.error(checkauth.data.message);
-      navigate("/login");
-      return;
-    }
+    // const token = localStorage.getItem('token');
+    // const checkauth = await axios.get(config.BACKEND_API + '/api/checkauth', {
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     authorization: token ? `Bearer ${token}` : '',
+    //   },
+    // });
 
-    if (pageIndex >= urls.length || isLoading) return; // Prevent further loading if no more URLs or if loading
+    // if (checkauth.data?.caught) {
+    //   toast.error(checkauth.data?.message);
+    //   navigate("/login");
+    //   return;
+    // }
+
 
     setIsLoading(true);
+
+    let currentUrl = '';
+    if (pageIndex <= 3) {
+      currentUrl = `/api/myfeed/getmyfeed/text/${pageIndex}`; // text/0 to text/3
+    } else if (pageIndex <= 5) {
+      currentUrl = `/api/myfeed/getmyfeed/topic/${pageIndex - 4}`; // topic/0 to topic/1
+    } else if (pageIndex <= 9) {
+      currentUrl = `/api/myfeed/getmyfeed/text/${pageIndex - 1}`; // text/5 to text/8
+    } else {
+      const topicIndex = Math.floor((pageIndex - 9) / 2) + 2; // Calculate topic/2, topic/3, etc.
+      const isTextRequest = (pageIndex - 9) % 2 === 0;
+      currentUrl = isTextRequest
+        ? `/api/myfeed/getmyfeed/text/${pageIndex - 1}` // Continue text requests
+        : `/api/myfeed/getmyfeed/topic/${topicIndex}`; // Add topic requests
+    }
+
     try {
-      const response = await GET(urls[pageIndex]);
-      if (response.data.success === false) {
-        throw new Error("No more articles found");
+      const token = localStorage.getItem('token');
+      console.log("token", token);
+      // console.log("token", config.BACKEND_API + urls[pageIndex]);
+      // const response = await axios.get(config.BACKEND_API_SCRAP + urls[pageIndex], {
+      const response = await axios.get(config.BACKEND_API_SCRAP + currentUrl , {
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: token ? `Bearer ${token}` : '',
+        },
+      });
+      // const response = null;
+
+      if (response.data?.success === false) {
+        // throw new Error("No more articles found");
+        console.log(response.data?.message);
       }
       if (response.data?.caught) {
-        // toast.error(response.data.message);
+        // toast.error(response.data?.message);
         navigate("/login");
       }
 
@@ -295,7 +323,7 @@ const MyFeed = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [pageIndex, isLoading, urls, navigate]);
+  }, [ pageIndex, navigate]);
 
   // Filtering articles based on search query
   useEffect(() => {
