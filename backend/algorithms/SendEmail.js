@@ -54,7 +54,7 @@ async function sendEmail(username, email, code, CheckUserExist) {
         from: 'NewsBuzz parthivva227@gmail.com>',
         to: `${email}`,
         subject: 'Forget Password Verification Code',
-        html: `<p>Dear ${username},</p>
+        html: `<p>Dear User,</p>
              <p>We received a request to reset the password for your account on NewsBuzz. To proceed, please use the verification code below:</p>
              <h2>Verification Code: ${code}</h2>
              <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
