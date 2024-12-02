@@ -11,11 +11,10 @@ import {
 } from "@mui/material";
 import { ThemeContext } from "../context/ThemeContext";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
-import BookmarkIcon from "@mui/icons-material/Bookmark";
-import HeartIcon from "@mui/icons-material/Favorite";
 import HeartBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShareButton from "@mui/icons-material/Share";
 import CommentIcon from "@mui/icons-material/Comment";
+import ShareDialog from "./ShareDialog";
 
 const NewsCard = (props) => {
   const { mode } = useContext(ThemeContext);
@@ -23,14 +22,36 @@ const NewsCard = (props) => {
   const isSearchPage =
     location.pathname === "/search" || location.pathname === "/myfeed";
 
-  const [bookmarked, setBookmarked] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [showShareDialog, setShowShareDialog] = useState(false);
+  const shareDialogRef = useRef(null);
   const navigate = useNavigate();
- 
+
+
 
   const loginPage = () => {
     navigate("/login");
   };
+
+  const handleClickOutside = (event) => {
+    if (
+      shareDialogRef.current &&
+      !shareDialogRef.current.contains(event.target)
+    ) {
+      setShowShareDialog(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showShareDialog) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showShareDialog]);
 
   return (
     <Box
@@ -125,12 +146,7 @@ const NewsCard = (props) => {
                 )}
               </div>
 
-              <Tooltip
-                title="click"
-                placement="top"
-                TransitionComponent={Zoom}
-                arrow
-              >
+              <Tooltip title="click" placement="top" TransitionComponent={Zoom} arrow>
                 <Typography
                   variant="h6"
                   component="div"
@@ -184,19 +200,8 @@ const NewsCard = (props) => {
               alignItems: "center",
             }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                pl: 2,
-                mt: -1,
-              }}
-            >
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                fontSize="medium"
-              >
+            <Box sx={{ display: "flex", justifyContent: "flex-start", pl: 2, mt: -1 }}>
+              <Typography variant="caption" color="text.secondary" fontSize="medium">
                 {props.time}
               </Typography>
             </Box>
@@ -213,17 +218,13 @@ const NewsCard = (props) => {
             >
               <Tooltip title="Bookmark" arrow>
                 <IconButton onClick={loginPage}>
-                  {bookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                  <BookmarkBorderIcon />
                 </IconButton>
               </Tooltip>
 
               <Tooltip title="Like" arrow>
                 <IconButton onClick={loginPage}>
-                  {liked ? (
-                    <HeartIcon sx={{ color: "red" }} />
-                  ) : (
-                    <HeartBorderIcon />
-                  )}
+                  <HeartBorderIcon />
                 </IconButton>
               </Tooltip>
 
@@ -234,14 +235,22 @@ const NewsCard = (props) => {
               </Tooltip>
 
               <Tooltip title="Share" arrow>
-                <IconButton onClick={loginPage}>
+                <IconButton onClick={() => setShowShareDialog(true)}>
                   <ShareButton />
                 </IconButton>
               </Tooltip>
             </Box>
           </Box>
 
-        
+          {showShareDialog && (
+            <Box ref={shareDialogRef}>
+              <ShareDialog
+                open={showShareDialog}
+                onClose={() => setShowShareDialog(false)}
+                link={props.link}
+              />
+            </Box>
+          )}
         </Card>
       </Box>
     </Box>
