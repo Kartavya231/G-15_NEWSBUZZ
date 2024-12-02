@@ -81,14 +81,14 @@ const ForgotPassword = ({ setShowModal }) => {
 
     try {
       const result = await POST('/api/sendemail/forgotpassword', { email });
-      if (result.data.success) {
-        toast.success(result.data.message);
+      if (result.data?.success) {
+        toast.success(result.data?.message);
         setCurrentStep(2);
       } else if (result.data?.caught) {
         navigate('/login'); return;
-        // toast.error(result.data.message);
+        // toast.error(result.data?.message);
       } else {
-        toast.error(result.data.message);
+        toast.error(result.data?.message);
       }
     } catch (error) {
       toast.error('Something went wrong.');
@@ -101,14 +101,14 @@ const ForgotPassword = ({ setShowModal }) => {
     e.preventDefault();
     const response = await POST('/api/sendemail/forgotpassword/verifycode', { email: email, code: Code });
 
-    if (response.data.success) {
-      toast.success(response.data.message);
+    if (response.data?.success) {
+      toast.success(response.data?.message);
       setCurrentStep(3);
     } else if (response.data?.caught) {
-      // toast.error(response.data.message);
+      // toast.error(response.data?.message);
       navigate('/login'); return;
     } else {
-      toast.error(response.data.message);
+      toast.error(response.data?.message);
     }
   };
 
@@ -122,14 +122,14 @@ const ForgotPassword = ({ setShowModal }) => {
     const encryptedPassword = CryptoJS.AES.encrypt(newPassword, config.PWD_SECRET).toString();
     const response = await POST('/api/sendemail/forgotpassword/resetpassword', { email: email, password: encryptedPassword });
 
-    if (response.data.success) {
-      toast.success(response.data.message);
+    if (response.data?.success) {
+      toast.success(response.data?.message);
       setShowModal(false);
     } else if (response.data?.caught) {
       navigate('/login'); return;
-      // toast.error(response.data.message);
+      // toast.error(response.data?.message);
     } else {
-      toast.error(response.data.message);
+      toast.error(response.data?.message);
     }
   };
 
