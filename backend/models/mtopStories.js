@@ -26,4 +26,4 @@ const top_stories_schema = new mongoose.Schema({
 
 const top_stories_model = mongoose.model('top_stories', top_stories_schema);
 
-export default top_stories_model;
+export {top_stories_model};
