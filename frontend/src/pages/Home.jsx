@@ -243,38 +243,6 @@ const Home = () => {
               Login to view more articles
             </button>
           )}
-
-          {isLoggedIn && (
-            <InfiniteScroll
-              dataLength={displayedArticles.length}
-              next={loadMoreArticles}
-              hasMore={hasMore}
-              loader={
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: "20px",
-                  }}
-                >
-                  <Skeleton
-                    animation="wave"
-                    variant="rounded"
-                    width={800}
-                    height={140}
-                  />
-                </div>
-              }
-              endMessage={
-                <p style={{ textAlign: "center" }}>
-                  <b>Yay! You have seen it all</b>
-                </p>
-              }
-              style={{ overflow: "visible" }}
-            />
-          )}
-        </>
-      )}
     </div>
   );
 };
