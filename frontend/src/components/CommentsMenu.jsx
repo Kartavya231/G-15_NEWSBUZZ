@@ -27,13 +27,13 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
     const fetchComments = async () => {
       try {
         const response = await POST('/api/userdo/getComments', { articleURL });
-        if (response.data.success === true) {
+        if (response.data?.success === true) {
           setComments(response.data.comments);
           setLoggedUserName(response.data.loggedUserName);
         }
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
       } catch (error) {
         console.error('Failed to fetch comments:', error);
@@ -50,13 +50,13 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
     const HandleNumComments = async () => {
       try {
         const response = await POST('/api/userdo/numComments', { articleURL });
-        if (response.data.success === true) {
+        if (response.data?.success === true) {
           setNumComments(response.data.numComments);
         }
 
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
       } catch (error) {
         console.error('Failed to fetch comments:', error);
@@ -76,7 +76,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
       try {
         const response = await POST('/api/userdo/addComment', { articleURL, comment: newComment });
         // console.log(response.data);
-        if (response.data.success === true) {
+        if (response.data?.success === true) {
           setComments([...comments, {
             username: response.data.username,
             comment: newComment,
@@ -88,7 +88,7 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
 
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
 
       } catch (error) {
@@ -108,14 +108,14 @@ const CommentsMenu = ({ isOpen, anchorEl, onClose, articleURL, setNumComments })
           commentId
         });
         // console.log(response.data);
-        if (response.data.success === true) {
+        if (response.data?.success === true) {
           setComments(comments.filter((comment) => comment.commentId !== commentId));
           toast.success('Comment deleted successfully');
         }
 
         if (response.data?.caught) {
           navigate('/login'); return;
-          // toast.error(response.data.message);
+          // toast.error(response.data?.message);
         }
 
       } catch (error) {
