@@ -5,7 +5,7 @@
 
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import usermodel from '../models/muser.js';
+// import usermodel from '../models/muser.js';
 
 dotenv.config();
 
@@ -48,4 +48,4 @@ const checkAuth =  (req, res, next) => {
 
 // module.exports = checkAuth;
 
-export default checkAuth;
+export { checkAuth };
