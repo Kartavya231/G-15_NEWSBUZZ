@@ -8,7 +8,7 @@ const quickSearchSchema = new Schema(
   {
     user_id:
     {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       required: true, ref: "User"
     },
 
@@ -25,4 +25,4 @@ const quickSearchSchema = new Schema(
 
 const quickSearch_model = model("quicksearch", quickSearchSchema);
 
-export default quickSearch_model;
+export {quickSearch_model};
