@@ -13,4 +13,5 @@ router.post("/forgotpassword/verifycode", ForgotPasswordVarifyCode);
 
 router.post("/forgotpassword/resetpassword", ForgotPasswordResetPassword);
 
-export default router;;
+// export default router;;
+export { router };
