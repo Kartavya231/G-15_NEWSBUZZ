@@ -1,4 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { GET } from "../api.js";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -6,12 +7,13 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import TextField from "@mui/material/TextField";
 import Box from "@mui/material/Box";
 import { ThemeContext } from "../context/ThemeContext";
+import { useQuery } from "@tanstack/react-query";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import InfiniteScroll from "react-infinite-scroll-component";
+import UnLoggedNewsCard from "../components/UnLoggedNewsCard.jsx";
 import { useNavigate } from "react-router-dom";
 import { Grid } from "@mui/material";
-import UnLoggedNewsCard from "../components/UnLoggedNewsCard.jsx";
 gsap.registerPlugin(ScrollTrigger);
 
 const parentstyle = {
@@ -27,13 +29,99 @@ const parentstyle = {
 const Home = () => {
   const { mode } = useContext(ThemeContext);
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredArticles, setFilteredArticles] = useState([]);
   const [displayedArticles, setDisplayedArticles] = useState([]);
   const [hasMore, setHasMore] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for login status
+  // const [isLoggedIn, setIsLoggedIn] = useState(false); // New state for login status
   const navigator = useNavigate();
+  const PAGE_SIZE = 15;
+  console.log("Home.jsx");
+
+  const isLoggedIn = localStorage.getItem('token') != null;
+
 
   const LoginPage = () => {
     navigator("/login");
+  };
+
+  const {
+    data: articles = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["top_stories"],
+    queryFn: async () => {
+      const resultFromBackend = await GET("/api/algorithms/top_stories");
+      // console.log(resultFromBackend.data);
+      // console.log(localStorage.getItem('token'));
+
+      if (resultFromBackend.data?.success) {
+        return resultFromBackend.data.articles;
+      } else if (isLoggedIn != null && resultFromBackend.data?.caught) {
+        // toast.error(resultFromBackend.data?.message);
+        // console.log("caught");
+        navigator("/login");
+      }
+      else {
+        throw new Error("Error fetching data from backend");
+      }
+    },
+    onError: (error) => {
+      console.error("GET request error:", error);
+    },
+    staleTime: 6000000,
+    cacheTime: 6000000,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    retry: false,
+  });
+
+  useEffect(() => {
+    const filtered = articles.filter((article) =>
+      article.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredArticles(filtered);
+    setDisplayedArticles(filtered.slice(0, PAGE_SIZE));
+    setHasMore(filtered.length > PAGE_SIZE);
+  }, [searchQuery, articles]);
+
+  useEffect(() => {
+    gsap.defaults({ ease: "power3" });
+
+    ScrollTrigger.batch(".box", {
+      onEnter: (batch) =>
+        gsap.to(batch, {
+          opacity: 1,
+          y: 0,
+          stagger: { each: 0.15, grid: [1, 3] },
+          overwrite: true,
+        }),
+      onLeave: (batch) =>
+        gsap.set(batch, { opacity: 0, y: -100, overwrite: true }),
+      onEnterBack: (batch) =>
+        gsap.to(batch, { opacity: 1, y: 0, stagger: 0.15, overwrite: true }),
+      onLeaveBack: (batch) =>
+        gsap.set(batch, { opacity: 0, y: 100, overwrite: true }),
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [displayedArticles]);
+
+  const loadMoreArticles = () => {
+    setTimeout(() => {
+      const currentLength = displayedArticles.length;
+      const moreArticles = filteredArticles.slice(
+        currentLength,
+        currentLength + PAGE_SIZE
+      );
+      setDisplayedArticles((prevArticles) => [
+        ...prevArticles,
+        ...moreArticles,
+      ]);
+      setHasMore(currentLength + PAGE_SIZE < filteredArticles.length);
+    }, 500);
   };
 
   return (
@@ -121,6 +209,7 @@ const Home = () => {
         </div>
       ) : (
         <>
+
           <div style={{ marginTop: "50px" }}>
             <Grid container>
               <Grid
@@ -159,8 +248,10 @@ const Home = () => {
             </Grid>
           </div>
 
+
           {!isLoggedIn && (
             <button
+
               type="submit"
               style={{
                 fontFamily: "'Quicksand', 'Arial', sans-serif",
