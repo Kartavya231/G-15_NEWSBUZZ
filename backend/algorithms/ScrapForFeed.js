@@ -1,3 +1,4 @@
+import { Cluster } from "puppeteer-cluster";
 import puppeteer from "puppeteer";
 
 const scanForLinks = async (page) => {
@@ -35,9 +36,11 @@ const scanForLinks = async (page) => {
   return articles.filter(article => article !== null);
 };
 
-const ScrapForFeed = async (searchText) => {
-  // Use "news" if no search text is provided
-  searchText = searchText || "news";
+const ScrapForFeed = async (SearchTexts) => {
+  // SearchTexts is array of only one element.
+  if (SearchTexts.length === 0) {
+    SearchTexts[0] = "news";
+  }
 
   try {
     const puppeteerOptions = {
@@ -50,25 +53,41 @@ const ScrapForFeed = async (searchText) => {
       ]
     };
 
-    // Launch the browser
-    const browser = await puppeteer.launch(puppeteerOptions);
-    
-    // Create a new page
-    const page = await browser.newPage();
+    const cluster = await Cluster.launch({
+      concurrency: Cluster.CONCURRENCY_PAGE,
+      maxConcurrency: 5,
+      puppeteerOptions: puppeteerOptions,
+    });
 
-    // Construct the search URL
-    const searchURL = `https://www.google.com/search?q=${searchText}&tbm=nws`;
+    cluster.on("taskerror", (err, data) => {
+      console.log(`Error crawling ${data}: ${err.message}`);
+    });
 
-    // Navigate to the search page
-    await page.goto(searchURL, { waitUntil: "networkidle2" });
+    let allArticles = [];  // Array to hold all articles
 
-    // Scan for links
-    const articles = await scanForLinks(page);
+    await cluster.task(async ({ page, data: url }) => {
+      await page.goto(url, { waitUntil: "networkidle2" });
+      const articles = await scanForLinks(page);
+      console.log(url, articles.length);
 
-    // Close the browser
-    await browser.close();
+      allArticles = [...allArticles, ...articles];  // Collect articles from each page
+    });
 
-    return articles;
+    console.log(`Starting search for ${SearchTexts}`);
+    const searchURL = `https://www.google.com/search?q=`;
+
+    console.log(SearchTexts);
+
+    for (let i = 0; i < SearchTexts.length; i++) {
+      await cluster.queue(`${searchURL}${SearchTexts[i]}&tbm=nws`);
+    }
+
+    await cluster.idle();
+    await cluster.close();
+
+    console.log(allArticles.length);
+
+    return allArticles;  // Return the collected articles
   } catch (error) {
     console.error("An error occurred while Scraping search data:", error);
     return [];
@@ -78,8 +97,8 @@ const ScrapForFeed = async (searchText) => {
 // Main function to demonstrate usage
 async function main() {
   try {
-    const searchTerm = "technology";
-    const scrapedArticles = await ScrapForFeed(searchTerm);
+    const searchTerms = ["technology", "AI", "innovation"];
+    const scrapedArticles = await ScrapForFeed(searchTerms);
     
     console.log("Total articles scraped:", scrapedArticles.length);
     
@@ -90,11 +109,8 @@ async function main() {
       console.log(`Provider: ${article.providerName}`);
       console.log(`Link: ${article.link}`);
     });
-
-    return scrapedArticles;
   } catch (error) {
     console.error("Error in main function:", error);
-    return [];
   }
 }
 
