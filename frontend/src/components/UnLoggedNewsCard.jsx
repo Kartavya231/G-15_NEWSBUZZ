@@ -22,8 +22,7 @@ const NewsCard = (props) => {
   const isSearchPage =
     location.pathname === "/search" || location.pathname === "/myfeed";
 
-  const [showShareDialog, setShowShareDialog] = useState(false);
-  const shareDialogRef = useRef(null);
+  
   const navigate = useNavigate();
 
 
@@ -32,27 +31,7 @@ const NewsCard = (props) => {
     navigate("/login");
   };
 
-  const handleClickOutside = (event) => {
-    if (
-      shareDialogRef.current &&
-      !shareDialogRef.current.contains(event.target)
-    ) {
-      setShowShareDialog(false);
-    }
-  };
-
-  useEffect(() => {
-    if (showShareDialog) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showShareDialog]);
-
+ 
   return (
     <Box
       sx={{
