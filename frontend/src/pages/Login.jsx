@@ -13,22 +13,25 @@ import {
   FormControl,
   Select,
   MenuItem,
-  InputLabel,
+  InputLabel
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import VpnKeyRoundedIcon from "@mui/icons-material/VpnKeyRounded";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import config from "../config";
-import CryptoJS from "crypto-js";
-import { POST } from "../api"; // Adjust the import path as needed
+import CryptoJS from 'crypto-js';
+import { POST } from '../api'; // Adjust the import path as needed
 // import image1 from "../images/bg2.jpg";
-import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
-import { Modal } from "react-bootstrap";
+import EmailRoundedIcon from '@mui/icons-material/EmailRounded';
+import { Modal } from 'react-bootstrap';
 import ForgotPassword from "../components/ForgotPassword";
+import login_background from "../images/login_background.jpg";
+
 
 export default function Login() {
+
   const [loading, setLoading] = useState(false);
   const [justVerify, setJustVerify] = useState(false);
   const [validPassword, setValidPassword] = useState(false);
@@ -70,26 +73,24 @@ export default function Login() {
       return;
     }
     setLoading(true);
-    const encryptedPassword = CryptoJS.AES.encrypt(
-      password,
-      config.PWD_SECRET
-    ).toString();
+    const encryptedPassword = CryptoJS.AES.encrypt(password, config.PWD_SECRET).toString();
 
     const loginDetails = {
       role,
       email: emailUsername,
-      password: encryptedPassword,
+      password: encryptedPassword
     };
 
     try {
-      const result = await POST("/api/user/login", loginDetails);
+      const result = await POST('/api/user/login', loginDetails);
 
-      if (result.data.success) {
-        window.localStorage.setItem("token", result.data.token);
+      if (result.data?.success) {
+        window.localStorage.setItem('token', result.data.token);
         toast.success("Logged in successfully");
-        navigate("/");
-      } else {
-        toast.error(result.data.message);
+        navigate('/');
+      }
+      else {
+        toast.error(result.data?.message);
       }
     } catch (err) {
       toast.error("Error Occured !!");
@@ -98,23 +99,26 @@ export default function Login() {
     setLoading(false);
   };
 
+
   const [showModal, setShowModal] = useState(false);
 
+
   return (
+
     <Grid
       container
       justifyContent="center"
       alignItems="center"
       sx={{
-        // backgroundImage: `url(${image1})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        minHeight: "100vh",
-        width: "100%",
-        position: "fixed",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        minHeight: '100vh',
+        width: '100%',
+        position: 'fixed',
         top: 0,
         left: 0,
+        backgroundImage: `url(${login_background})`,
       }}
     >
       <Grid
@@ -131,26 +135,24 @@ export default function Login() {
           alignItems: "center",
           boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
           backdropFilter: "blur(12px)",
-          backgroundColor: "transparent",
+          backgroundColor: "white",
         }}
       >
         <Avatar sx={{ backgroundColor: "#134611", mb: 2 }}>
           <LockOutlinedIcon />
         </Avatar>
 
-        <Typography
-          variant="h5"
-          fontWeight="bold"
-          mb={2}
-          sx={{
-            fontFamily: "'Quicksand', 'Arial', sans-serif",
-          }}
-        >
+
+        <Typography variant="h5" fontWeight="bold" mb={2} sx={{
+          fontFamily: "'Quicksand', 'Arial', sans-serif",
+        }}>
           Log In
         </Typography>
 
+
         <form onSubmit={handleSubmit} style={{ width: "100%" }}>
           <Grid container spacing={2}>
+
             <Grid item xs={12}>
               <FormControl size="small" fullWidth>
                 <InputLabel id="role-label" color="success">
@@ -162,9 +164,7 @@ export default function Login() {
                   id="role"
                   label="Role"
                   value={role}
-                  onChange={(e) => {
-                    setRole(e.target.value);
-                  }}
+                  onChange={(e) => { setRole(e.target.value); }}
                   sx={{
                     borderRadius: 25,
                     fontWeight: "bold",
@@ -181,25 +181,19 @@ export default function Login() {
                     </InputAdornment>
                   }
                 >
-                  <MenuItem
-                    value="READER"
-                    sx={{
-                      fontFamily: "'Quicksand', 'Arial', sans-serif",
-                    }}
-                  >
-                    READER
-                  </MenuItem>
-                  <MenuItem
-                    value="PROVIDER"
-                    sx={{
-                      fontFamily: "'Quicksand', 'Arial', sans-serif",
-                    }}
-                  >
-                    PROVIDER
-                  </MenuItem>
+
+                  <MenuItem value="READER" sx={{
+                    fontFamily: "'Quicksand', 'Arial', sans-serif",
+
+                  }}>READER</MenuItem>
+                  <MenuItem value="PROVIDER" sx={{
+                    fontFamily: "'Quicksand', 'Arial', sans-serif",
+
+                  }}>PROVIDER</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
+
 
             <Grid item xs={12}>
               <TextField
@@ -270,8 +264,8 @@ export default function Login() {
                   (password === ""
                     ? "This field cannot be empty."
                     : !validPassword
-                    ? "The password must contain at least 8 characters."
-                    : "")
+                      ? "The password must contain at least 8 characters."
+                      : "")
                 }
                 InputProps={{
                   startAdornment: (
@@ -311,6 +305,7 @@ export default function Login() {
               />
             </Grid>
 
+
             <Grid item container justifyContent="space-between" xs={12}>
               <Button
                 color="error"
@@ -320,12 +315,13 @@ export default function Login() {
                   fontFamily: "'Quicksand', 'Arial', sans-serif",
                   fontWeight: "bold",
                   textDecoration: "underline",
-                  marginTop: "-15px",
+                  marginTop: '-15px',
                 }}
               >
                 Forgot Password?
               </Button>
             </Grid>
+
 
             <Grid item xs={12}>
               <Button
@@ -358,6 +354,8 @@ export default function Login() {
               </Button>
             </Grid>
 
+
+
             <Grid item container justifyContent="center" xs={12}>
               <Button
                 color="success"
@@ -373,12 +371,14 @@ export default function Login() {
                   textAlign: "center",
                   alignItems: "center",
                   alignContent: "center",
-                  width: "100%", // Ensures the button takes full width
+                  width: '100%', // Ensures the button takes full width
                 }}
               >
                 Don't have an account? Sign Up
               </Button>
             </Grid>
+
+
           </Grid>
         </form>
       </Grid>
@@ -389,11 +389,14 @@ export default function Login() {
           <Typography variant="h5" sx={{ mb: 1, fontWeight: 600 }}>
             Forgot password
           </Typography>
+
         </Modal.Header>
         <Modal.Body>
           <ForgotPassword setShowModal={setShowModal} />
         </Modal.Body>
       </Modal>
+
+
     </Grid>
   );
 }
