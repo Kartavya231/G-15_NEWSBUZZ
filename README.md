@@ -117,6 +117,6 @@ For local setup, follow these steps:
 - [@Chauhan Fajilmiya - 202201221](https://github.com/202201221)
 - [@Vaghani Parthiv - 202201249](https://github.com/thankyou0)
 - [@Vasa Saumya - 202201254](https://github.com/SaumyaVasa3084)
-- [@Pandita Ayush - 202201256](https://github.com/AyushPandita111)
+- [@Ayush Pandita- 202201256](https://github.com/AyushPandita111)
 
 ---
