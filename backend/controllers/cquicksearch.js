@@ -106,8 +106,8 @@ const deleteQuickSearch = async (req, res) => {
       return res.status(210).json({ success: false, message: "No quick search found for the user" });
     }
 
+    quickSearchUser.quickSearchText = quickSearchUser.quickSearchText.filter((quickSearch) => quickSearch !== quickSearchText);
 
-    quickSearchUser.quickSearchText = quickSearchUser.quickSearchText.filter((quickSearch) => quickSearch.text !== quickSearchText);
     console.log(quickSearchUser.quickSearchText);
     await quickSearchUser.save();
 

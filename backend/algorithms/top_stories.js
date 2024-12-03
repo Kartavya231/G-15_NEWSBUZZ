@@ -226,3 +226,329 @@ const ScrapTop_stories = async (req, res) => {
 // export default ScrapTop_stories;
 
 export { ScrapTop_stories };
+
+
+
+// const puppeteer = require("puppeteer");
+// const randomUseragent = require("random-useragent"); // Added random-useragent
+// const fs = require("fs");
+
+// const scanForLinks = async (page) => {
+// 	// Use a single evaluate call to get both links and titles
+// 	console.log('asfda');
+
+// 	const result = await page.evaluate(() => {
+// 		let Alink = [];
+// 		let Atime = [];
+// 		let AimageURL = [];
+// 		let Aprovider = [];
+
+// 		const articles = document.querySelectorAll(".IBr9hb");
+// 		console.log(articles);
+
+// 		const anchors = articles.querySelectorAll(".gPFEn");
+// 		anchors.forEach((anchor) => {
+// 			if (anchor.hasAttribute("href")) {
+// 				Alink.push(`https://news.google.com/${anchor.getAttribute("href")}`);
+// 			}
+// 		});
+
+// 		anchors.forEach((title) => {
+// 			Atitle.push(title.innerText.trim());
+// 		});
+
+
+// 		// const articleTime = articles.querySelectorAll(".hvbAAd");
+// 		// articleTime.forEach((time) => {
+// 		// 	Atime.push(time.innerText.trim());
+// 		// });
+
+
+// 		// const imageURL = articles.querySelectorAll(".Quavad.vwBmvb");
+// 		// imageURL.forEach((url) => {
+// 		// 	AimageURL.push(url.getAttribute("href"));
+// 		// });
+
+// 		// const provider = articles.querySelectorAll(".QmrVtf.RD0gLb");
+// 		// provider.forEach((prov) => {
+// 		// 	Aprovider.push(prov.innerText.trim());
+// 		// });
+
+
+// 		return { Alink, Atitle, Atime, AimageURL, Aprovider };
+// 	});
+
+// 	const { Alink, Atitle } = result;
+
+// 	if (result) {
+// 		console.log("Top stories found successfully\n");
+// 	}
+// 	const limit = Math.min(10, Atitle.length, Alink.length); // Limit to 3 or the length of Atitle if less than 3
+// 	for (let i = 0; i < limit; i++) {
+// 		console.log(Atitle[i]);
+// 		// await func(Alink[i]);
+// 		console.log(Alink[i]);
+// 		console.log();
+// 	}
+// 	console.log(limit);
+
+// 	return result;
+// };
+
+
+// const scanForLinks = async (page) => {
+// 	// Use a single evaluate call to get both links and titles
+// 	console.log('asfda');
+
+// 	let Alink = [];
+// 	let Atime = [];
+// 	let AimageURL = [];
+// 	let Aprovider = [];
+// 	// await page.waitForSelector('.IBr9hb', { timeout: 10000 });
+// 	// console.log('Page is fully loaded');
+// 	// let articles = null;
+
+
+// 	const result = await page.evaluate(async () => {
+
+// 		const anchors = document.querySelector("c-wiz > div > article > div.UOVeFe > time");
+// 		anchors.forEach((anchor) => {
+// 			if (anchor.textContent) {
+// 				Alink.push(`https://news.google.com/${anchor.textContent}`);
+// 			}
+// 		});
+
+// 	});
+
+// 	console.log(Alink);
+
+// 	return { Alink, Atime, AimageURL, Aprovider };
+
+// 	// console.log(result);
+// 	return result;
+// };
+
+// const Scrap = async (searchby) => {
+
+// 	try {
+// 		let country = searchby.country;
+// 		const puppeteerOptions = {
+// 			headless: false, // Set headless to false to see the browser
+// 			args: ["--no-sandbox", "--disable-setuid-sandbox"],
+// 		};
+// 		const browser = await puppeteer.launch(puppeteerOptions);
+// 		const page = await browser.newPage();
+
+// 		const userAgent = randomUseragent.getRandom(); // Get a random user agent
+// 		await page.setUserAgent(userAgent); // Set the random user agent
+
+// 		console.log(`Starting to search for Top stories in ${country}`);
+
+// 		const url = `https://news.google.com/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRFZxYUdjU0JXVnVMVWRDR2dKSlRpZ0FQAQ?hl=en-${country}&gl=${country}&ceid=${country}%3Aen`;
+
+// 		await page.goto(url, { waitUntil: "networkidle2" });
+
+// 		const result = await scanForLinks(page);
+// 		console.log(result.Alink);
+
+// 		setTimeout(async () => {
+// 			await browser.close();
+// 		}, 0);
+// 		// console.log(result);
+
+// 		return result;
+// 	}
+// 	catch (err) {
+// 		return "An error occurred while fetching data.";
+// 	}
+// };
+
+// // const searchFor = [
+// // 	{
+// // 		country: "IN",
+// // 	},
+// // ];
+
+// // // Run for each search item
+// // for (const searchby of searchFor) {
+// // 	run(searchby);
+// // }
+
+
+
+// Scrap({
+// 	country: "IN",
+// });
+
+
+// // module.exports = { ScrapTop_stories };
+
+
+// const puppeteer = require('puppeteer');
+
+// (async () => {
+// 	// Launch the browser
+// 	const browser = await puppeteer.launch();
+// 	const page = await browser.newPage();
+// 	let country = "IN";
+// 	// Navigate to the desired webpage
+// 	await page.goto(`https://news.google.com/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRFZxYUdjU0JXVnVMVWRDR2dKSlRpZ0FQAQ?hl=en-${country}&gl=${country}&ceid=${country}%3Aen`); // Replace with the actual URL
+
+// 	// Wait for the content of the div with class "UOVeFe" to load
+// 	await page.waitForSelector('div.UOVeFe');
+
+// 	// Extract the text from the div with class "UOVeFe"
+// 	// const timeText = await page.$eval('div.UOVeFe time.hvbAAd', el => el.textContent);
+// 	// console.log('Time text:', timeText);  // Output: 25 minutes ago
+
+// 	// const hrefValue = await page.$eval('article div.XlKvRb a.WwrzSb', links => links.map(link => link.getAttribute('href')));
+// 	const Alink = await page.$$eval('article.IBr9hb div.XlKvRb a.WwrzSb', links => links.map(link => link.getAttribute('href')));
+// 	console.log('Href:', hrefs.length);  // Output: href value of the anchor tag
+
+
+
+// 	// Close the browser
+// 	await browser.close();
+// })();
+
+
+
+// const puppeteer = require("puppeteer");
+// const randomUseragent = require("random-useragent");
+
+// const scanForLinks = async (page) => {
+// 	// Use a single evaluate call to get both links and titles
+// 	console.log('ok1');
+// 	let Alink = [];
+// 	let Atitle = [];
+// 	let Atime = [];
+// 	let AimageURL = [];
+// 	let AproviderImg = [];
+
+// 	await page.waitForSelector('div.UOVeFe');
+
+// 	Atime = await page.$$eval('article.IBr9hb div.UOVeFe time.hvbAAd', elements => elements.map(el => el.textContent));
+
+// 	console.log(Atime.length);   // 14 ??????????
+// 	return { Alink, Atitle, Atime, AimageURL, AproviderImg };
+// };
+
+// const Scrap = async (searchby) => {
+// 	try {
+// 		let country = searchby.country;
+// 		const puppeteerOptions = {
+// 			headless: false, // Set headless to false to see the browser
+// 			args: ["--no-sandbox", "--disable-setuid-sandbox"],
+// 		};
+// 		const browser = await puppeteer.launch(puppeteerOptions);
+// 		const page = await browser.newPage();
+
+// 		const userAgent = randomUseragent.getRandom(); // Get a random user agent
+// 		await page.setUserAgent(userAgent); // Set the random user agent
+
+// 		console.log(`Starting to search for Top stories in ${country}`);
+
+// 		const url = `https://news.google.com/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRFZxYUdjU0JXVnVMVWRDR2dKSlRpZ0FQAQ?hl=en-${country}&gl=${country}&ceid=${country}%3Aen`;
+
+// 		await page.goto(url, { waitUntil: "networkidle2" });
+
+// 		console.log('ok2');
+// 		const result = await scanForLinks(page);
+// 		console.log('ok3');
+// 		console.log(result.AimageURL);
+
+// 		await browser.close();
+
+// 		return result;
+// 	} catch (err) {
+// 		console.error("An error occurred while fetching data:", err);
+// 		return "An error occurred while fetching data.";
+// 	}
+// };
+
+// // Example usage
+// const searchby = { country: 'IN' };
+// Scrap(searchby).then(result => {
+// 	console.log('Final result:', result);
+// }).catch(error => {
+// 	console.error('Error in Scrap:', error);
+// });
+
+
+// const puppeteer = require("puppeteer");
+// const randomUseragent = require("random-useragent");
+
+// const scanForLinks = async (page) => {
+// 	await page.waitForSelector('article.IBr9hb');
+
+// 	const articles = await page.$$eval('article.IBr9hb', articles => {
+// 		return articles.map(article => {
+// 			const linkElement = article.querySelector('a.gPFEn');
+// 			const timeElement = article.querySelector('div.UOVeFe time.hvbAAd');
+// 			const imageElement = article.querySelector('figure.K0q4G.P22Vib img.Quavad.vwBmvb'); // Update with the correct selector
+// 			const providerImgElement1 = article.querySelector('div.MCAGUe img.msvBD.zC7z7b'); // Update with the correct selector
+// 			const providerImgElement2 = article.querySelector('div.MCAGUe div.oovtQ img.qEdqNd.y3G2Ed'); // Update with the correct selector
+
+// 			// 		const providerImg1 = await article.$('div.MCAGUe img.msvBD.zC7z7b');
+// 			// 		const providerImg2 = await article.$('div.MCAGUe div.oovtQ img.qEdqNd.y3G2Ed');
+
+// 			// if (providerImg1) {
+// 			// 			const providerImgSrc = await providerImg1.getProperty('srcset');
+// 			// 			AproviderImg.push(await providerImgSrc.jsonValue());
+// 			// 		} else if (providerImg2) {
+// 			// 			const providerImgSrc = await providerImg2.getProperty('srcset');
+// 			// 			AproviderImg.push(await providerImgSrc.jsonValue());
+// 			// 		} else {
+// 			// 			AproviderImg.push(null);
+// 			// 		}
+// 			return {
+// 				title: linkElement ? linkElement.textContent.trim() : null,
+// 				link: linkElement ? linkElement.getAttribute('href') : null,
+// 				time: timeElement ? timeElement.textContent : null,
+// 				imageURL: imageElement ? imageElement.getAttribute('src') : null,
+// 				providerImg: providerImgElement1 ? providerImgElement1.getAttribute('src') : providerImgElement2 ? providerImgElement2.getAttribute('src') : null
+// 			};
+// 		});
+// 	});
+
+// 	return articles;
+// };
+
+// const Scrap = async (searchby) => {
+// 	try {
+// 		let country = searchby.country;
+// 		const puppeteerOptions = {
+// 			headless: false, // Set headless to false to see the browser
+// 			args: ["--no-sandbox", "--disable-setuid-sandbox"],
+// 		};
+// 		const browser = await puppeteer.launch(puppeteerOptions);
+// 		const page = await browser.newPage();
+
+// 		const userAgent = randomUseragent.getRandom(); // Get a random user agent
+// 		await page.setUserAgent(userAgent); // Set the random user agent
+
+// 		console.log(`Starting to search for Top stories in ${country}`);
+
+// 		const url = `https://news.google.com/topics/CAAqKggKIiRDQkFTRlFvSUwyMHZNRFZxYUdjU0JXVnVMVWRDR2dKSlRpZ0FQAQ?hl=en-${country}&gl=${country}&ceid=${country}%3Aen`;
+
+// 		await page.goto(url, { waitUntil: "networkidle2" });
+
+// 		const result = await scanForLinks(page);
+// 		console.log(result);
+
+// 		await browser.close();
+
+// 		return result;
+// 	} catch (err) {
+// 		console.error("An error occurred while fetching data:", err);
+// 		return "An error occurred while fetching data.";
+// 	}
+// };
+
+// // Example usage
+// const searchby = { country: 'IN' };
+// Scrap(searchby).then(result => {
+// 	console.log('Final result:', result);
+// }).catch(error => {
+// 	console.error('Error in Scrap:', error);
+// });

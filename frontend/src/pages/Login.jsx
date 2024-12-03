@@ -87,7 +87,8 @@ export default function Login() {
       if (result.data?.success) {
         window.localStorage.setItem('token', result.data.token);
         toast.success("Logged in successfully");
-        navigate('/');
+        // navigate('/');
+        window.location.href = '/';
       }
       else {
         toast.error(result.data?.message);

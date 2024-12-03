@@ -1,0 +1,85 @@
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.dotted-spinner {
+  display: inline-block;
+  position: relative;
+  width: 30px;
+  /* Reduced from 40px */
+  height: 30px;
+  /* Reduced from 40px */
+}
+
+.dotted-spinner div {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #3268bf;
+  border-radius: 50%;
+}
+
+/* Adjusted positioning for each dot */
+.dotted-spinner div:nth-child(1) {
+  top: 0px;
+  left: 12px;
+  /* Reduced from 18px */
+}
+
+.dotted-spinner div:nth-child(2) {
+  top: 4px;
+  /* Reduced from 6px */
+  left: 20px;
+  /* Reduced from 30px */
+}
+
+.dotted-spinner div:nth-child(3) {
+  top: 12px;
+  /* Reduced from 18px */
+  left: 24px;
+  /* Reduced from 36px */
+}
+
+.dotted-spinner div:nth-child(4) {
+  top: 20px;
+  /* Reduced from 30px */
+  left: 20px;
+  /* Reduced from 30px */
+}
+
+.dotted-spinner div:nth-child(5) {
+  top: 24px;
+  /* Reduced from 36px */
+  left: 12px;
+  /* Reduced from 18px */
+}
+
+.dotted-spinner div:nth-child(6) {
+  top: 20px;
+  /* Reduced from 30px */
+  left: 4px;
+  /* Reduced from 6px */
+}
+
+.dotted-spinner div:nth-child(7) {
+  top: 12px;
+  /* Reduced from 18px */
+  left: 0px;
+}
+
+.dotted-spinner div:nth-child(8) {
+  top: 4px;
+  /* Reduced from 6px */
+  left: 4px;
+  /* Reduced from 6px */
+}
+
+.dotted-spinner {
+  animation: spin 1.5s linear infinite;
+}

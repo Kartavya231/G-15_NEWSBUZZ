@@ -199,3 +199,4 @@ const scrapSearch = async (req, res) => {
 
 // module.exports = { scrapSearch, Scrap };
 export { scrapSearch, Scrap };
+

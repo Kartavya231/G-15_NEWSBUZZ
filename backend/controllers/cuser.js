@@ -6,9 +6,9 @@
 // const dotenv = require('dotenv');
 // const express = require("express");
 
-import usermodel from "../models/muser.js";
-import quickSearch_model from "../models/mquicksearch.js";
-import verificationcodemodel from "../models/mverificationcode.js";
+import {usermodel} from "../models/muser.js";
+import {quickSearch_model} from "../models/mquicksearch.js";
+import {verificationcodemodel} from "../models/mverificationcode.js";
 import jsonwebtoken from "jsonwebtoken";
 import CryptoJS from 'crypto-js';
 import dotenv from 'dotenv';
@@ -35,7 +35,7 @@ const logInPost = async (req, res) => {
     return res.status(210).json({ success: false, message: "All fields required" });
   }
 
-  console.log(req.body.email);
+  // console.log(req.body.email);
 
   const userExist = await usermodel.findOne({
     email, role
@@ -76,8 +76,15 @@ const signUpPost = async (req, res) => {
     const userExist = await usermodel.findOne({ email, role });
 
     if (userExist) {
-      return res.status(210).json({ success: false, error: "User already exists for given role" });
+      return res.status(210).json({ success: false, message: "Email already exists for given role" });
     }
+
+    const userNameExist = await usermodel.findOne({ username });
+
+    if (userNameExist) {
+      return res.status(210).json({ success: false, message: "Username already exists" });
+    }
+
 
     let cloudinaryURL = "";
     if (role === "PROVIDER") {
@@ -88,7 +95,7 @@ const signUpPost = async (req, res) => {
       ));
       const cloudinary_res = await cloudinary_v2.uploader.upload(req.file.path, {
         folder: 'news-aggregator',
-        // use_filename: news-aggregator-${username}--- ${Date.now()},
+        // use_filename: `news-aggregator-${username}--- ${Date.now()}`,
         resource_type: "auto",
       });
       // console.log(cloudinary_res.secure_url);
@@ -109,7 +116,7 @@ const signUpPost = async (req, res) => {
     }
 
 
-    const token = jsonwebtoken.sign({ id: user._id, username: user.username, role: user.role }, process.env.JWT_SECRET);
+    const token = jsonwebtoken.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET);
 
     // console.log("token", token);
 
@@ -154,10 +161,18 @@ const updateUserProfile = async (req, res) => {
 
 
 const isUserExistWhenSignUp = async (req, res) => {
-  const { email, role } = req.body;
+  const {username, email, role } = req.body;
   const userExist = await usermodel.findOne({ email, role });
+
+  const userNameExist = await usermodel.findOne({ username });
+
+
+  if(userNameExist){
+    return res.status(210).json({ success: false, message: "Username already exists" });
+  }
+  
   if (userExist) {
-    return res.status(210).json({ success: false, message: "User already exists for given role" });
+    return res.status(210).json({ success: false, message: "Email already exists for given role" });
   }
   return res.status(202).json({ success: true, message: "User does not exist" });
 }
@@ -168,9 +183,11 @@ const isUserExistWhenSignUp = async (req, res) => {
 
 // export default cuser;
 
+// export default { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile };
+
 const UserRole = async (req, res) => {
   const user = await usermodel.findById(req.user.id);
-  return res.status(202).json({ success: true, role: user.role });
+  return res.status(202).json({ success: true, role: user?.role });
 }
 
 export default { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile, UserRole };

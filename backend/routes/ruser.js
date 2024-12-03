@@ -3,7 +3,7 @@ const router = express.Router();
 import cuser from "../controllers/cuser.js";
 const { logInPost, signUpPost, isUserExistWhenSignUp, getUserProfile, updateUserProfile, UserRole } = cuser;
 import multer from "multer";
-import checkAuth from "../middleware/checkAuth.js";
+import {checkAuth} from "../middleware/checkAuth.js";
 
 
 const storage = multer.diskStorage({

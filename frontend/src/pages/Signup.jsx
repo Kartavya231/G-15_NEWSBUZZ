@@ -725,7 +725,8 @@ export default function Register() {
       if (result.data?.success) {
         window.localStorage.setItem('token', result.data.token);
         toast.success("Signup successfully");
-        navigate('/');
+        // navigate('/');
+        window.location.href = "/";
       }
       else {
         console.log("asdf");
