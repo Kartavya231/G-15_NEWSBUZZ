@@ -1,0 +1,222 @@
+/* General Body and Background */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #1c1e26, #3a3d47);
+    color: #ffffff;
+    overflow: hidden;
+  }
+  
+  /* Quiz container */
+  .quiz-app {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  /* Animation for fading in/out */
+  .fade-in {
+    animation: fadeIn 0.5s;
+  }
+  
+  .fade-out {
+    animation: fadeOut 0.5s;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+  
+  /* Styling for the Quiz Title */
+  .title {
+    font-size: 2em;
+    font-weight: bold;
+    color: #FFD700;
+    margin-bottom: 1em;
+    text-shadow: 1px 1px 10px rgba(255, 215, 0, 0.5);
+  }
+  
+  /* Options and Buttons */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .option {
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #FFD700;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  .option:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+  }
+  
+  .option.selected {
+    background-color: #FFD700;
+    color: #333;
+    transform: scale(1.05);
+  }
+  
+  /* Navigation Button Styling */
+  .navigation {
+    margin-top: 20px;
+  }
+  
+  .nav-button, .submit-button, .retry-button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #FFD700;
+    color: #333;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .nav-button:hover, .submit-button:hover, .retry-button:hover {
+    background-color: #333;
+    color: #FFD700;
+    transform: scale(1.1);
+  }
+  
+  /* Final Result Styling */
+  .quiz-results h2 {
+    color: #FFD700;
+  }
+  
+  .retry-button {
+    margin-top: 20px;
+  }
+  
+  /* Circle Stamp Style for Score Display */
+  .score-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 10px solid #FFD700;
+    background-color: rgba(255, 215, 0, 0.1);
+    color: #FFD700;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px auto;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    visibility: hidden; /* Hidden initially */
+    transform: scale(0);  /* Start at scale 0 */
+  }
+  
+  /* Animation for stamp bounce effect */
+  @keyframes stampBounce {
+    0% {
+      transform: scale(0);  /* Start at 0 size */
+      visibility: visible;
+      opacity: 0;
+    }
+    30% {
+      transform: scale(1.1);  /* Bounce effect */
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.2);  /* Increase the bounce */
+    }
+    70% {
+      transform: scale(1.1);  /* Come back to 1.1 */
+    }
+    100% {
+      transform: scale(1);  /* Final size */
+    }
+  }
+  
+  /* Apply animation when stamp is visible */
+  .stamp-animation {
+    visibility: visible;
+    animation: stampBounce 0.8s forwards;
+  }
+  
+  .score-circle span {
+    position: relative;
+    z-index: 1;
+  }
+  .report-item {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+  }
+  
+  .report-item.correct {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  
+  .report-item.incorrect {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+  }
+  .option-report {
+    padding: 5px;
+    margin: 5px 0;
+  }
+  
+  .correct-answer {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  .wrong-answer {
+    color: #dc3545;
+    font-weight: bold;
+  }
+  .no-scroll {
+    overflow: hidden;
+  }
+  /* Ensure the quiz results are scrollable */
+.quiz-results {
+  max-height: 80vh; /* Allow scrolling if content overflows */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 20px;
+  background-color: #333;
+}
+
+.quiz-report {
+  margin-top: 20px;
+}
+
+.score-circle {
+  margin: 20px 0;
+}

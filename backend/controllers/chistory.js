@@ -1,11 +1,12 @@
 // const history_model = require("../models/mhistory");
-import history_model from "../models/mhistory.js";
+import {history_model} from "../models/mhistory.js";
 
 const gethistory = async (req, res, next) => {
 
     const user_id = req.user.id;
     let userHistory = await history_model.findOne({ userid: user_id });
 
+    console.log(userHistory.historyData);
     if (userHistory) {
         res.status(202).json({ success: true, data: userHistory.historyData });
     } else {

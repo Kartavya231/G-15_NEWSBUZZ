@@ -137,8 +137,9 @@ const UserProfile = () => {
             </Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter User name"
+              placeholder="User name"
               value={userName}
+              readOnly
               onChange={(e) => setUserName(e.target.value)}
               style={{
                 borderRadius: "10px",
@@ -163,7 +164,7 @@ const UserProfile = () => {
                 </Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter first name"
+                  placeholder="first name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   style={{
@@ -188,7 +189,7 @@ const UserProfile = () => {
                 </Form.Label>
                 <Form.Control
                   type="number"
-                  placeholder="Enter age"
+                  placeholder="age"
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
                   style={{
@@ -217,7 +218,7 @@ const UserProfile = () => {
                   } >Last Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter last name"
+                  placeholder="last name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   style={{
@@ -244,7 +245,7 @@ const UserProfile = () => {
                   } >Phone No.</Form.Label>
                 <Form.Control
                   type="tel"
-                  placeholder="Enter phone number"
+                  placeholder="phone number"
                   value={phoneNo}
                   onChange={(e) => setPhoneNo(e.target.value)}
                   style={{
@@ -273,7 +274,7 @@ const UserProfile = () => {
               }>Email</Form.Label>
             <Form.Control
               type="email"
-              placeholder="Enter email"
+              placeholder="email"
               value={email}
               readOnly
               style={{
@@ -298,7 +299,7 @@ const UserProfile = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Form.Control
                 type="text"
-                placeholder="Enter topics of interest"
+                placeholder="topics of interest"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 ref={inputRef}

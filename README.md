@@ -68,12 +68,17 @@ For local setup, follow these steps:
    ```bash
    git clone https://github.com/Kartavya231/G-15_NEWSBUZZ.git
 2. Set up .env and other files:
--  Create a **.env** in the server directory with the following
-- FRONTEND .env :
-   - REACT_APP_BACKEND_API= (Enter Backend URL)
-   - REACT_APP_PWD_SECRET= (Enter Secret key to Hash Password)
 
-- BACKEND .env :
+
+-  Create a **/src/config.js** in the client directory with the following
+
+   - BACKEND_API: "YOUR_BACKEND_API",
+   - BACKEND_API_SCRAP: 'YOUR_BACKEND_API_SCRAP(vercel)',
+   - PWD_SECRET: 'YOUR_PWD_SECRET'
+
+
+-  Create a **.env** in the server directory with the following
+
    - PORT = (Enter Port)
    - MONGO_URL = (Enter MongoDB URL)
    - JWT_SECRET = (Enter JWT token Secret key)

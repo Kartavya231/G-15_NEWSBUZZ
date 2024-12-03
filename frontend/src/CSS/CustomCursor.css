@@ -1,0 +1,24 @@
+:root {
+  --cursor-size: 20px;
+}
+
+#cursor {
+  position: fixed;
+  top: calc(var(--cursor-size) * -0.5);
+  left: calc(var(--cursor-size) * -0.5);
+  mix-blend-mode: difference;
+  filter: url(#goo);
+  pointer-events: none;
+}
+
+.cursor-circle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  border-radius: 50%;
+  background-color: white;
+  /* Change this to your desired color */
+  transform-origin: center center;
+}
