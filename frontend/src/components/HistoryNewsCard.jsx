@@ -745,7 +745,7 @@ const HistoryNewsCard = (props) => {
       toast.success(response.data?.message);
       // window.location.reload();
 
-      props.setHistoryArray((prev) => { return prev.filter((item) => item._id !== props._id) });
+      props.setHistoryArray((prev) => { return prev.filter((item) => item._id !== props._id) } );
     }
     else if (response.data?.caught) {
       // window.location.reload();

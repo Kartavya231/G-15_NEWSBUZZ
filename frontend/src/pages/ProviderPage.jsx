@@ -314,7 +314,6 @@ function ProviderPage() {
         </Toolbar>
       </AppBar>
 
-
       <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
         <Grid container spacing={3}>
           {channels.map((channel) => (

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import { Grid, Skeleton } from "@mui/material";
 // import React, { useEffect, useState } from "react";
 // import InfiniteScroll from "react-infinite-scroll-component";
@@ -160,6 +161,8 @@
 // export default History;
 
 
+=======
+>>>>>>> 907a8c91d2a9dafac3520fb3e359f5988a7c4794
 import { Box, Grid, Skeleton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -201,7 +204,6 @@ const History = () => {
 
     getHistory();
   }, [navigate, setHistoryArray, HistoryArray]);
-
 
   const handleRemoveHistory = async () => {
 
